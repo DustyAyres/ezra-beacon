@@ -1,0 +1,148 @@
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: var(--surface-color);
+  border-radius: 4px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.task-item:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-item.completed {
+  opacity: 0.7;
+}
+
+.task-item.completed .task-title {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.task-item.grid {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  height: 100%;
+  min-height: 120px;
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.task-checkbox:hover {
+  border-color: var(--primary-color);
+}
+
+.task-checkbox.checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.task-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title {
+  display: block;
+  font-size: 16px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.task-category {
+  padding: 2px 8px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 500;
+}
+
+.task-due-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.task-steps {
+  background-color: var(--background-color);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.task-important {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: all 0.2s;
+  padding: 4px;
+}
+
+.task-important:hover {
+  opacity: 0.6;
+}
+
+.task-important.active {
+  opacity: 1;
+  color: var(--important-color);
+}
+
+/* Grid View Styles */
+.task-item.grid .task-checkbox {
+  align-self: flex-start;
+}
+
+.task-item.grid .task-content {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.task-item.grid .task-title {
+  white-space: normal;
+  margin-bottom: 8px;
+}
+
+.task-item.grid .task-important {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .task-item {
+    padding: 12px;
+  }
+
+  .task-title {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,67 @@
+.task-view {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.task-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.task-view-date {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.loading-tasks {
+  text-align: center;
+  padding: 48px;
+  color: var(--text-secondary);
+}
+
+.task-groups {
+  margin-top: 24px;
+}
+
+.task-group {
+  margin-bottom: 32px;
+}
+
+.task-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.task-group-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.task-group-count {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .task-view-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-view-date {
+    font-size: 16px;
+  }
+}

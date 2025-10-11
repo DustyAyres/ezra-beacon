@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   frontend:
     build:
@@ -22,7 +20,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=/app/data/ezra.db
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/ezra.db
       - AzureAd__Instance=https://login.microsoftonline.com/
       - AzureAd__Domain=${AZURE_DOMAIN}
       - AzureAd__TenantId=${AZURE_TENANT_ID}
@@ -39,9 +37,6 @@ services:
 networks:
   ezra-network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
 
 volumes:
   data:

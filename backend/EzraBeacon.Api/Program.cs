@@ -25,8 +25,9 @@ builder.Services.AddCors(options =>
 });
 
 // Add Entity Framework
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=ezra.db";
 builder.Services.AddDbContext<EzraBeaconContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connectionString));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

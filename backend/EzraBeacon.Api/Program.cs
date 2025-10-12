@@ -67,14 +67,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
+app.UseAuthentication();
 
-if (!bypassAuth)
+if (bypassAuth)
 {
-    app.UseAuthentication();
-}
-else
-{
-    app.UseAuthentication();
     // Log that we're in development mode
     app.Logger.LogWarning("⚠️ DEVELOPMENT MODE: Authentication is bypassed. DO NOT use in production!");
 }

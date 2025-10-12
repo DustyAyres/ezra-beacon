@@ -55,18 +55,6 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
         <div className="header-content">
           <img src="/assets/icons/ezra-title-logo.svg" alt="Ezra" className="header-logo" />
           <nav className="header-nav">
-            <Link to="/myday" className={location.pathname === '/myday' ? 'active' : ''}>
-              My Day
-            </Link>
-            <Link to="/important" className={location.pathname === '/important' ? 'active' : ''}>
-              Important
-            </Link>
-            <Link to="/planned" className={location.pathname === '/planned' ? 'active' : ''}>
-              Planned
-            </Link>
-            <Link to="/tasks" className={location.pathname === '/tasks' ? 'active' : ''}>
-              Tasks
-            </Link>
           </nav>
           <div className="header-user">
             {process.env.REACT_APP_BYPASS_AUTH === 'true' && (

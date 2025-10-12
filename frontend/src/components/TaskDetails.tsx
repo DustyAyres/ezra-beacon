@@ -76,7 +76,9 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       <div className="task-details" onClick={(e) => e.stopPropagation()}>
         <div className="task-details-header">
           <h2>Task Details</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose}>
+            <i className="fas fa-times"></i>
+          </button>
         </div>
 
         <div className="task-details-content">
@@ -141,7 +143,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                     className="step-delete"
                     onClick={() => handleStepDelete(step.id)}
                   >
-                    ×
+                    <i className="fas fa-times"></i>
                   </button>
                 </div>
               ))}

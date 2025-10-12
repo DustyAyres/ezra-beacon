@@ -7,7 +7,7 @@ public class Category
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string ColorHex { get; set; } = "#0078D4"; // Default blue color
+    public string ColorHex { get; set; } = "#ffcf33"; // Default yellow color
     public string UserId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     

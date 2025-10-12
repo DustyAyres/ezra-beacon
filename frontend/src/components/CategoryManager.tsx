@@ -15,17 +15,16 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   onCategoriesChange,
 }) => {
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [newCategoryColor, setNewCategoryColor] = useState('#0078D4');
+  const [newCategoryColor, setNewCategoryColor] = useState('#ffcf33');
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editColor, setEditColor] = useState('');
 
   const predefinedColors = [
-    '#0078D4', // Blue
+    '#ffcf33', // Yellow (Primary)
     '#00BCF2', // Light Blue
     '#00B294', // Teal
     '#009E49', // Green
-    '#FFB900', // Yellow
     '#FF8C00', // Orange
     '#E81123', // Red
     '#EC008C', // Pink
@@ -41,7 +40,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
           colorHex: newCategoryColor,
         });
         setNewCategoryName('');
-        setNewCategoryColor('#0078D4');
+        setNewCategoryColor('#ffcf33');
         onCategoriesChange();
       } catch (error) {
         console.error('Failed to create category:', error);
@@ -86,7 +85,9 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
       <div className="category-manager" onClick={(e) => e.stopPropagation()}>
         <div className="category-manager-header">
           <h2>Manage Categories</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose}>
+            <i className="fas fa-times"></i>
+          </button>
         </div>
 
         <div className="category-manager-content">
@@ -123,7 +124,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
                 </div>
               </div>
               <button
-                className="create-btn"
+                className="tertiary w-button"
                 onClick={handleCreateCategory}
                 disabled={!newCategoryName.trim()}
               >
@@ -160,13 +161,13 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
                           />
                         </div>
                         <button
-                          className="save-btn"
+                          className="tertiary w-button"
                           onClick={() => handleUpdateCategory(category.id)}
                         >
-                          Save
+                          <i className="fas fa-save"></i> Save
                         </button>
                         <button
-                          className="cancel-btn"
+                          className="secondary-button w-button"
                           onClick={() => setEditingCategory(null)}
                         >
                           Cancel
@@ -183,16 +184,16 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
                         </div>
                         <div className="category-actions">
                           <button
-                            className="edit-btn"
+                            className="tertiary w-button"
                             onClick={() => startEditing(category)}
                           >
-                            Edit
+                            <i className="fas fa-edit"></i> Edit
                           </button>
                           <button
-                            className="delete-btn"
+                            className="secondary-button w-button"
                             onClick={() => handleDeleteCategory(category.id)}
                           >
-                            Delete
+                            <i className="fas fa-trash"></i> Delete
                           </button>
                         </div>
                       </>

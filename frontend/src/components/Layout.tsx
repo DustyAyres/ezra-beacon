@@ -50,23 +50,11 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           aria-label="Toggle menu"
         >
-          <span className="menu-icon">☰</span>
+          <i className="fas fa-bars menu-icon"></i>
         </button>
         <div className="header-content">
           <img src="/assets/icons/ezra-title-logo.svg" alt="Ezra" className="header-logo" />
           <nav className="header-nav">
-            <Link to="/myday" className={location.pathname === '/myday' ? 'active' : ''}>
-              My Day
-            </Link>
-            <Link to="/important" className={location.pathname === '/important' ? 'active' : ''}>
-              Important
-            </Link>
-            <Link to="/planned" className={location.pathname === '/planned' ? 'active' : ''}>
-              Planned
-            </Link>
-            <Link to="/tasks" className={location.pathname === '/tasks' ? 'active' : ''}>
-              Tasks
-            </Link>
           </nav>
           <div className="header-user">
             {process.env.REACT_APP_BYPASS_AUTH === 'true' && (
@@ -88,10 +76,27 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
         />
         
         <main className="main-content">
-          <div className="page-header">
-            <h1 className="page-title">{getPageTitle()}</h1>
+          <div 
+            className="orb-background"
+            style={{
+              position: 'fixed',
+              top: '-30vh',
+              right: '-80vw',
+              width: '200%',
+              height: '200%',
+              backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/large-orb-white.png)`,
+              backgroundRepeat: 'no-repeat',
+              opacity: 0.3,
+              pointerEvents: 'none',
+              zIndex: 0
+            }}
+          />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div className="page-header">
+              <h1 className="page-title">{getPageTitle()}</h1>
+            </div>
+            {children}
           </div>
-          {children}
         </main>
       </div>
 

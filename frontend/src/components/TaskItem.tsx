@@ -41,7 +41,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
           onClick={handleToggleComplete}
           aria-label={task.isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
         >
-          {task.isCompleted && '✓'}
+          {task.isCompleted && <i className="fas fa-check"></i>}
         </button>
 
         <div className="task-content" onClick={() => setShowDetails(true)}>
@@ -57,7 +57,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
             )}
             {task.dueDate && (
               <span className="task-due-date">
-                📅 {formatDueDate(task.dueDate)}
+                <i className="fas fa-calendar"></i> {formatDueDate(task.dueDate)}
               </span>
             )}
             {task.steps.length > 0 && (
@@ -73,7 +73,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
           onClick={handleToggleImportant}
           aria-label={task.isImportant ? 'Remove importance' : 'Mark as important'}
         >
-          ⭐
+          <i className={`${task.isImportant ? 'fas' : 'far'} fa-star`}></i>
         </button>
       </div>
 

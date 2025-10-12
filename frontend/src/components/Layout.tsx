@@ -19,7 +19,12 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
   const [showCategoryManager, setShowCategoryManager] = useState(false);
 
   const handleLogout = () => {
-    instance.logoutPopup();
+    if (process.env.REACT_APP_BYPASS_AUTH === 'true') {
+      // In development mode, just reload the page
+      window.location.reload();
+    } else {
+      instance.logoutPopup();
+    }
   };
 
   const getPageTitle = () => {
@@ -64,6 +69,9 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
             </Link>
           </nav>
           <div className="header-user">
+            {process.env.REACT_APP_BYPASS_AUTH === 'true' && (
+              <span className="dev-mode-badge">DEV MODE</span>
+            )}
             <span className="user-name">{accounts[0]?.name || 'User'}</span>
             <button className="logout-button" onClick={handleLogout}>
               Sign out

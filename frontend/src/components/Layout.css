@@ -69,6 +69,16 @@
   gap: 16px;
 }
 
+.dev-mode-badge {
+  background-color: #ff9800;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .user-name {
   color: var(--text-secondary);
   font-size: 14px;

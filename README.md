@@ -66,6 +66,30 @@ Ezra Beacon is a Progressive Web App (PWA) for task management, similar to Micro
 
 ## Development
 
+### Quick Start (No Azure AD Required)
+
+For local development without Azure AD setup:
+
+1. **Copy the development environment file**
+   ```bash
+   copy env.development.example .env
+   ```
+
+2. **Run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
+
+This will run the application in development mode with authentication bypassed. You'll see a "DEV MODE" badge in the UI.
+
+### Development with Azure AD
+
+To develop with real Azure AD authentication:
+
+1. Set up Azure AD as described above
+2. Set `BYPASS_AUTH=false` in your `.env` file
+3. Run the application normally
+
 ### Backend Development
 ```bash
 cd backend
@@ -79,6 +103,11 @@ cd frontend
 npm install
 npm start
 ```
+
+### Environment Variables
+
+- `BYPASS_AUTH=true` - Bypasses Azure AD authentication (development only)
+- `BYPASS_AUTH=false` - Uses real Azure AD authentication (default)
 
 ### Running Tests
 ```bash

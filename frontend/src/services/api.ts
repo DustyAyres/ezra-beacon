@@ -26,23 +26,30 @@ class ApiService {
     // Request interceptor to add auth token
     this.api.interceptors.request.use(
       async (config) => {
-        try {
-          const accounts = msalInstance.getAllAccounts();
-          if (accounts.length > 0) {
-            const response = await msalInstance.acquireTokenSilent({
-              scopes: apiConfig.scopes,
-              account: accounts[0],
-            });
-            config.headers.Authorization = `Bearer ${response.accessToken}`;
+        const isDevelopment = process.env.REACT_APP_BYPASS_AUTH === 'true';
+        
+        if (isDevelopment) {
+          // In development mode, add a dummy token
+          config.headers.Authorization = 'Bearer dev-token';
+        } else {
+          try {
+            const accounts = msalInstance.getAllAccounts();
+            if (accounts.length > 0) {
+              const response = await msalInstance.acquireTokenSilent({
+                scopes: apiConfig.scopes,
+                account: accounts[0],
+              });
+              config.headers.Authorization = `Bearer ${response.accessToken}`;
+            }
+          } catch (error) {
+            if (error instanceof InteractionRequiredAuthError) {
+              // Redirect to login
+              msalInstance.acquireTokenRedirect({
+                scopes: apiConfig.scopes,
+              });
+            }
+            throw error;
           }
-        } catch (error) {
-          if (error instanceof InteractionRequiredAuthError) {
-            // Redirect to login
-            msalInstance.acquireTokenRedirect({
-              scopes: apiConfig.scopes,
-            });
-          }
-          throw error;
         }
         return config;
       },

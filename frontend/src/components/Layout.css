@@ -113,6 +113,7 @@
   overflow-y: auto;
   background-color: var(--background-color);
   padding: 24px;
+  position: relative;
 }
 
 .page-header {

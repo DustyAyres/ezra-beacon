@@ -88,10 +88,28 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
         />
         
         <main className="main-content">
-          <div className="page-header">
-            <h1 className="page-title">{getPageTitle()}</h1>
+          <div 
+            className="orb-background"
+            style={{
+              position: 'fixed',
+              top: '-30vh',
+              right: '-80vw',
+              width: '200%',
+              height: '200%',
+              backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/large-orb-white.png)`,
+              backgroundRepeat: 'no-repeat',
+              opacity: 0.3,
+              pointerEvents: 'none',
+              zIndex: 0,
+              color: 'black'
+            }}
+          />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div className="page-header">
+              <h1 className="page-title">{getPageTitle()}</h1>
+            </div>
+            {children}
           </div>
-          {children}
         </main>
       </div>
 

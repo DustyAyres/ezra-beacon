@@ -5,11 +5,17 @@ import './LoginPage.css';
 
 const LoginPage: React.FC = () => {
   const { instance } = useMsal();
+  const isDevelopment = process.env.REACT_APP_BYPASS_AUTH === 'true';
 
   const handleLogin = () => {
-    instance.loginPopup(loginRequest).catch((error) => {
-      console.error('Login failed:', error);
-    });
+    if (isDevelopment) {
+      // In development mode, just reload the page to trigger the dev auth
+      window.location.reload();
+    } else {
+      instance.loginPopup(loginRequest).catch((error) => {
+        console.error('Login failed:', error);
+      });
+    }
   };
 
   return (
@@ -18,6 +24,9 @@ const LoginPage: React.FC = () => {
         <img src="/assets/images/ezra-logo.png" alt="Ezra Logo" className="login-logo" />
         <h1 className="login-title">Welcome to Ezra Beacon</h1>
         <p className="login-subtitle">Your personal task management companion</p>
+        {isDevelopment && (
+          <p className="login-dev-warning">⚠️ Development Mode - Authentication Bypassed</p>
+        )}
         <button className="login-button" onClick={handleLogin}>
           Sign in with Microsoft
         </button>

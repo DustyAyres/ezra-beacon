@@ -11,7 +11,6 @@ namespace EzraBeacon.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class TasksController : ControllerBase
 {
     private readonly EzraBeaconContext _context;

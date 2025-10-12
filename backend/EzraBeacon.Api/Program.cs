@@ -2,12 +2,25 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using EzraBeacon.Infrastructure.Data;
+using EzraBeacon.Api.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Check if development auth bypass is enabled
+var bypassAuth = builder.Configuration.GetValue<bool>("Development:BypassAuthentication");
+
 // Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+if (!bypassAuth)
+{
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+}
+else
+{
+    // Add a dummy authentication scheme for development
+    builder.Services.AddAuthentication("DevAuth")
+        .AddScheme<DevAuthenticationSchemeOptions, DevAuthenticationHandler>("DevAuth", null);
+}
 
 builder.Services.AddAuthorization();
 
@@ -29,7 +42,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<EzraBeaconContext>(options =>
     options.UseSqlite(connectionString));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -50,8 +67,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
-
 app.UseAuthentication();
+
+if (bypassAuth)
+{
+    // Log that we're in development mode
+    app.Logger.LogWarning("⚠️ DEVELOPMENT MODE: Authentication is bypassed. DO NOT use in production!");
+}
+
 app.UseAuthorization();
 
 app.MapControllers();

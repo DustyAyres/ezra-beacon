@@ -10,17 +10,21 @@ import TasksView from './components/TasksView';
 import LoginPage from './components/LoginPage';
 import { Category } from './types';
 import api from './services/api';
+import { useDevAuth } from './hooks/useDevAuth';
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
   const { instance, inProgress } = useMsal();
+  const { isDevelopment, isDevAuthReady } = useDevAuth();
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const isAuthenticatedOrDev = isAuthenticated || (isDevelopment && isDevAuthReady);
+
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticatedOrDev) {
       loadCategories();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticatedOrDev]);
 
   const loadCategories = async () => {
     try {
@@ -31,11 +35,16 @@ function App() {
     }
   };
 
-  if (inProgress === InteractionStatus.Startup || inProgress === InteractionStatus.HandleRedirect) {
+  // Show loading only when in production mode or dev auth is not ready
+  if (!isDevelopment && (inProgress === InteractionStatus.Startup || inProgress === InteractionStatus.HandleRedirect)) {
     return <div className="loading">Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (isDevelopment && !isDevAuthReady) {
+    return <div className="loading">Initializing development mode...</div>;
+  }
+
+  if (!isAuthenticatedOrDev) {
     return <LoginPage />;
   }
 

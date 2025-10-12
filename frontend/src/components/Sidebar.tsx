@@ -10,10 +10,10 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories }) => {
   const navItems = [
-    { path: '/myday', label: 'My Day', icon: '☀️', count: 0 },
-    { path: '/important', label: 'Important', icon: '⭐', count: 0 },
-    { path: '/planned', label: 'Planned', icon: '📅', count: 0 },
-    { path: '/tasks', label: 'Tasks', icon: '📋', count: 0 },
+    { path: '/myday', label: 'My Day', icon: 'fa-sun', count: 0 },
+    { path: '/important', label: 'Important', icon: 'fa-star', count: 0 },
+    { path: '/planned', label: 'Planned', icon: 'fa-calendar-days', count: 0 },
+    { path: '/tasks', label: 'Tasks', icon: 'fa-list-check', count: 0 },
   ];
 
   return (
@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories }
               className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
               onClick={() => isOpen && onClose()}
             >
-              <span className="sidebar-icon">{item.icon}</span>
+              <i className={`fas ${item.icon} sidebar-icon`}></i>
               <span className="sidebar-label">{item.label}</span>
               {item.count > 0 && <span className="sidebar-count">{item.count}</span>}
             </NavLink>
@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories }
         </nav>
         
         <div className="sidebar-footer">
-          <button className="manage-categories-btn" onClick={onManageCategories}>
+          <button className="tertiary w-button" onClick={onManageCategories}>
             Manage Categories
           </button>
         </div>

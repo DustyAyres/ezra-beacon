@@ -50,7 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           aria-label="Toggle menu"
         >
-          <span className="menu-icon">☰</span>
+          <i className="fas fa-bars menu-icon"></i>
         </button>
         <div className="header-content">
           <img src="/assets/icons/ezra-title-logo.svg" alt="Ezra" className="header-logo" />

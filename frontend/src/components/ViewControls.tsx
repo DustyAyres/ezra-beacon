@@ -33,14 +33,14 @@ const ViewControls: React.FC<ViewControlsProps> = ({
           onClick={() => onViewModeChange('grid')}
           title="Grid view"
         >
-          <span className="icon">⊞</span> Grid
+          <i className="fas fa-grip icon"></i> Grid
         </button>
         <button
           className={`view-mode-btn ${viewMode === 'list' ? 'active' : ''}`}
           onClick={() => onViewModeChange('list')}
           title="List view"
         >
-          <span className="icon">☰</span> List
+          <i className="fas fa-list icon"></i> List
         </button>
       </div>
 

@@ -30,7 +30,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onAdd, placeholder = "Add a task" }) 
   return (
     <div className={`add-task ${isExpanded ? 'expanded' : ''}`}>
       <button className="add-task-trigger" onClick={() => setIsExpanded(true)}>
-        <span className="add-icon">+</span>
+        <i className="fas fa-plus add-icon"></i>
         <span>{placeholder}</span>
       </button>
       

@@ -26,20 +26,20 @@ ENV REACT_APP_BYPASS_AUTH=$REACT_APP_BYPASS_AUTH
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
+FROM node:20-alpine
+WORKDIR /app
 
-# Remove default nginx static assets
-RUN rm -rf ./*
+# Install serve to serve the static files
+RUN npm install -g serve
 
 # Copy built assets from build stage
-COPY --from=build /app/build .
+COPY --from=build /app/build ./build
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy assets directory
+COPY --from=build /app/public/assets ./build/assets
 
-# Expose port 80
-EXPOSE 80
+# Expose port 3000
+EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the app
+CMD ["serve", "-s", "build", "-l", "3000"]

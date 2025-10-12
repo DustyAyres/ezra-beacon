@@ -2,15 +2,15 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: frontend.Dockerfile
       args:
-        - REACT_APP_API_URL=/api
+        - REACT_APP_API_URL=http://localhost:5000/api
         - REACT_APP_AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
         - REACT_APP_AZURE_TENANT_ID=${AZURE_TENANT_ID}
         - REACT_APP_AZURE_REDIRECT_URI=${AZURE_REDIRECT_URI}
         - REACT_APP_BYPASS_AUTH=${BYPASS_AUTH:-false}
     ports:
-      - "3000:80"
+      - "3000:3000"
     depends_on:
       - backend
     networks:
@@ -19,7 +19,9 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: backend.Dockerfile
+    ports:
+      - "5000:5000"
     environment:
       - ConnectionStrings__DefaultConnection=Data Source=/app/data/ezra.db
       - AzureAd__Instance=https://login.microsoftonline.com/
@@ -33,8 +35,6 @@ services:
       - ./data:/app/data
     networks:
       - ezra-network
-    expose:
-      - "5000"
 
 networks:
   ezra-network:

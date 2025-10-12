@@ -88,8 +88,7 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
               backgroundRepeat: 'no-repeat',
               opacity: 0.3,
               pointerEvents: 'none',
-              zIndex: 0,
-              color: 'black'
+              zIndex: 0
             }}
           />
           <div style={{ position: 'relative', zIndex: 1 }}>

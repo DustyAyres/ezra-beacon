@@ -1,5 +1,8 @@
 # Ezra Beacon - Task Management PWA
 
+[![CI/CD Pipeline](https://github.com/DustyAyres/ezra-beacon/actions/workflows/ci.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/ci.yml)
+[![PR Validation](https://github.com/DustyAyres/ezra-beacon/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/pr-validation.yml)
+
 Ezra Beacon is a Progressive Web App (PWA) for task management, similar to Microsoft To-Do, built with React and .NET Core.
 
 ## Features

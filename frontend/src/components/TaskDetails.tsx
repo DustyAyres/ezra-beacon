@@ -7,9 +7,10 @@ import './TaskDetails.css';
 interface TaskDetailsProps {
   task: Task;
   categories: Category[];
-  onUpdate: (updates: Partial<Task>) => void;
-  onDelete: () => void;
+  onUpdate: (updates: Partial<Task>) => Promise<void>;
+  onDelete: () => Promise<void>;
   onClose: () => void;
+  onRefresh?: () => Promise<void>;
 }
 
 const TaskDetails: React.FC<TaskDetailsProps> = ({
@@ -18,6 +19,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   onUpdate,
   onDelete,
   onClose,
+  onRefresh,
 }) => {
   const [title, setTitle] = useState(task.title);
   const [dueDate, setDueDate] = useState(
@@ -32,10 +34,12 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const [newSteps, setNewSteps] = useState<{ title: string; tempId: string }[]>([]);
   const [deletedStepIds, setDeletedStepIds] = useState<string[]>([]);
   const [updatedSteps, setUpdatedSteps] = useState<Record<string, Partial<TaskStep>>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
-      // Update task details
+      // Update task details first
       const updates: Partial<Task> = {
         title,
         dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
@@ -44,26 +48,41 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       };
       await onUpdate(updates);
 
-      // Handle step changes
+      // Handle step changes in parallel where possible
+      const stepPromises: Promise<any>[] = [];
+
       // 1. Delete removed steps
-      for (const stepId of deletedStepIds) {
-        await api.deleteStep(task.id, stepId);
-      }
+      deletedStepIds.forEach(stepId => {
+        stepPromises.push(api.deleteStep(task.id, stepId));
+      });
 
       // 2. Update existing steps
-      for (const [stepId, updates] of Object.entries(updatedSteps)) {
-        await api.updateStep(task.id, stepId, updates);
+      Object.entries(updatedSteps).forEach(([stepId, updates]) => {
+        stepPromises.push(api.updateStep(task.id, stepId, updates));
+      });
+
+      // Wait for all deletes and updates to complete
+      await Promise.all(stepPromises);
+
+      // 3. Add new steps (these need to be sequential to maintain order)
+      for (let i = 0; i < newSteps.length; i++) {
+        await api.addStep(task.id, { 
+          title: newSteps[i].title
+        });
       }
 
-      // 3. Add new steps
-      for (const newStep of newSteps) {
-        await api.addStep(task.id, { title: newStep.title });
+      // Refresh parent data if callback provided
+      if (onRefresh) {
+        await onRefresh();
       }
 
-      // Refresh and close
-      window.location.reload();
+      // Close only after everything is done
+      onClose();
     } catch (error) {
       console.error('Failed to save changes:', error);
+      alert('Failed to save changes. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -218,15 +237,30 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         </div>
 
         <div className="task-details-footer">
-          <button className="btn-delete" onClick={onDelete}>
-            Delete Task
+          <button className="btn-delete" onClick={async () => {
+            if (window.confirm('Are you sure you want to delete this task?')) {
+              setIsSaving(true);
+              try {
+                await onDelete();
+                if (onRefresh) {
+                  await onRefresh();
+                }
+                onClose();
+              } catch (error) {
+                console.error('Failed to delete task:', error);
+                alert('Failed to delete task. Please try again.');
+                setIsSaving(false);
+              }
+            }
+          }} disabled={isSaving}>
+            {isSaving ? 'Deleting...' : 'Delete Task'}
           </button>
           <div className="footer-actions">
-            <button className="btn-cancel" onClick={onClose}>
+            <button className="btn-cancel" onClick={onClose} disabled={isSaving}>
               Cancel
             </button>
-            <button className="btn-save" onClick={handleSave}>
-              Save
+            <button className="btn-save" onClick={handleSave} disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
             </button>
           </div>
         </div>

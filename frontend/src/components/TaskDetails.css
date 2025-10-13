@@ -231,8 +231,13 @@
   color: white;
 }
 
-.btn-save:hover {
+.btn-save:hover:not(:disabled) {
   background-color: var(--primary-hover);
+}
+
+.task-details-footer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Mobile Styles */

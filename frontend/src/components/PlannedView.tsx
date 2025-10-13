@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, isToday, isTomorrow, isThisWeek, isAfter, startOfToday } from 'date-fns';
+import { isToday, isTomorrow, isThisWeek, startOfToday } from 'date-fns';
 import TaskList from './TaskList';
 import AddTask from './AddTask';
 import ViewControls from './ViewControls';
@@ -21,6 +21,7 @@ const PlannedView: React.FC<PlannedViewProps> = ({ categories }) => {
 
   useEffect(() => {
     loadTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, selectedCategory]);
 
   const loadTasks = async () => {

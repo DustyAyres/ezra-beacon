@@ -88,7 +88,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
 
   const handleAddStep = () => {
     if (newStepTitle.trim() && localSteps.length + newSteps.length < APP_LIMITS.MAX_STEPS_PER_TASK) {
-      const tempId = `temp-${Date.now()}`;
+      const tempId = `temp-${crypto.randomUUID()}`;
       setNewSteps([...newSteps, { title: newStepTitle.trim(), tempId }]);
       setNewStepTitle('');
     }

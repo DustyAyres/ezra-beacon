@@ -13,6 +13,7 @@ import {
   UpdateStepDto,
   TaskView,
   SortBy,
+  TaskCounts,
 } from '../types';
 
 class ApiService {
@@ -60,6 +61,11 @@ class ApiService {
   }
 
   // Tasks
+  async getTaskCounts(): Promise<TaskCounts> {
+    const response = await this.api.get<TaskCounts>('/tasks/counts');
+    return response.data;
+  }
+
   async getTasks(view?: TaskView, sortBy?: SortBy, categoryId?: string): Promise<Task[]> {
     const params = new URLSearchParams();
     if (view) params.append('view', view);

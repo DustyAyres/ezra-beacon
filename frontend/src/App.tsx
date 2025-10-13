@@ -8,21 +8,28 @@ import ImportantView from './components/ImportantView';
 import PlannedView from './components/PlannedView';
 import TasksView from './components/TasksView';
 import LoginPage from './components/LoginPage';
-import { Category } from './types';
+import { Category, TaskCounts } from './types';
 import api from './services/api';
 import { useDevAuth } from './hooks/useDevAuth';
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
-  const { instance, inProgress } = useMsal();
+  const { inProgress } = useMsal();
   const { isDevelopment, isDevAuthReady } = useDevAuth();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [taskCounts, setTaskCounts] = useState<TaskCounts>({
+    myDay: 0,
+    important: 0,
+    planned: 0,
+    all: 0
+  });
 
   const isAuthenticatedOrDev = isAuthenticated || (isDevelopment && isDevAuthReady);
 
   useEffect(() => {
     if (isAuthenticatedOrDev) {
       loadCategories();
+      loadTaskCounts();
     }
   }, [isAuthenticatedOrDev]);
 
@@ -32,6 +39,15 @@ function App() {
       setCategories(data);
     } catch (error) {
       console.error('Failed to load categories:', error);
+    }
+  };
+
+  const loadTaskCounts = async () => {
+    try {
+      const counts = await api.getTaskCounts();
+      setTaskCounts(counts);
+    } catch (error) {
+      console.error('Failed to load task counts:', error);
     }
   };
 
@@ -49,13 +65,13 @@ function App() {
   }
 
   return (
-    <Layout categories={categories} onCategoriesChange={loadCategories}>
+    <Layout categories={categories} onCategoriesChange={loadCategories} taskCounts={taskCounts} onTaskCountsChange={loadTaskCounts}>
       <Routes>
         <Route path="/" element={<Navigate to="/myday" replace />} />
-        <Route path="/myday" element={<MyDayView categories={categories} />} />
-        <Route path="/important" element={<ImportantView categories={categories} />} />
-        <Route path="/planned" element={<PlannedView categories={categories} />} />
-        <Route path="/tasks" element={<TasksView categories={categories} />} />
+        <Route path="/myday" element={<MyDayView categories={categories} onTaskChange={loadTaskCounts} />} />
+        <Route path="/important" element={<ImportantView categories={categories} onTaskChange={loadTaskCounts} />} />
+        <Route path="/planned" element={<PlannedView categories={categories} onTaskChange={loadTaskCounts} />} />
+        <Route path="/tasks" element={<TasksView categories={categories} onTaskChange={loadTaskCounts} />} />
       </Routes>
     </Layout>
   );

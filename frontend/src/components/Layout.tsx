@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useMsal } from '@azure/msal-react';
 import Sidebar from './Sidebar';
 import CategoryManager from './CategoryManager';
-import { Category } from '../types';
+import { Category, TaskCounts } from '../types';
 import './Layout.css';
 
 interface LayoutProps {
   children: React.ReactNode;
   categories: Category[];
   onCategoriesChange: () => void;
+  taskCounts: TaskCounts;
+  onTaskCountsChange: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChange }) => {
+const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChange, taskCounts, onTaskCountsChange }) => {
   const { instance, accounts } = useMsal();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -73,6 +75,7 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onManageCategories={() => setShowCategoryManager(true)}
+          taskCounts={taskCounts}
         />
         
         <main className="main-content">

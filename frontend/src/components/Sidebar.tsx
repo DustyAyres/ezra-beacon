@@ -1,19 +1,21 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { TaskCounts } from '../types';
 import './Sidebar.css';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   onManageCategories: () => void;
+  taskCounts: TaskCounts;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories, taskCounts }) => {
   const navItems = [
-    { path: '/myday', label: 'My Day', icon: 'fa-sun', count: 0 },
-    { path: '/important', label: 'Important', icon: 'fa-star', count: 0 },
-    { path: '/planned', label: 'Planned', icon: 'fa-calendar-days', count: 0 },
-    { path: '/tasks', label: 'Tasks', icon: 'fa-list-check', count: 0 },
+    { path: '/myday', label: 'My Day', icon: 'fa-sun', count: taskCounts.myDay },
+    { path: '/important', label: 'Important', icon: 'fa-star', count: taskCounts.important },
+    { path: '/planned', label: 'Planned', icon: 'fa-calendar-days', count: taskCounts.planned },
+    { path: '/tasks', label: 'Tasks', icon: 'fa-list-check', count: taskCounts.all },
   ];
 
   return (

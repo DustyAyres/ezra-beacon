@@ -118,6 +118,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories }) => {
                 viewMode={viewMode}
                 onTaskUpdate={handleTaskUpdate}
                 onTaskDelete={handleTaskDelete}
+                onRefresh={loadTasks}
                 categories={categories}
               />
             </div>

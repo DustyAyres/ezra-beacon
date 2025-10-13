@@ -122,6 +122,7 @@ const ImportantView: React.FC<ImportantViewProps> = ({ categories }) => {
                 viewMode={viewMode}
                 onTaskUpdate={handleTaskUpdate}
                 onTaskDelete={handleTaskDelete}
+                onRefresh={loadTasks}
                 categories={categories}
               />
             </div>

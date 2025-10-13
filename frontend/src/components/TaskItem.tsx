@@ -7,8 +7,9 @@ import './TaskItem.css';
 interface TaskItemProps {
   task: Task;
   categories: Category[];
-  onUpdate: (updates: Partial<Task>) => void;
-  onDelete: () => void;
+  onUpdate: (updates: Partial<Task>) => Promise<void>;
+  onDelete: () => Promise<void>;
+  onRefresh?: () => Promise<void>;
   viewMode: ViewMode;
 }
 
@@ -17,6 +18,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
   categories,
   onUpdate,
   onDelete,
+  onRefresh,
   viewMode,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -84,6 +86,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
           onUpdate={onUpdate}
           onDelete={onDelete}
           onClose={() => setShowDetails(false)}
+          onRefresh={onRefresh}
         />
       )}
     </>

@@ -6,8 +6,9 @@ import './TaskList.css';
 interface TaskListProps {
   tasks: Task[];
   viewMode: ViewMode;
-  onTaskUpdate: (taskId: string, updates: Partial<Task>) => void;
-  onTaskDelete: (taskId: string) => void;
+  onTaskUpdate: (taskId: string, updates: Partial<Task>) => Promise<void>;
+  onTaskDelete: (taskId: string) => Promise<void>;
+  onRefresh?: () => Promise<void>;
   categories: Category[];
 }
 
@@ -16,6 +17,7 @@ const TaskList: React.FC<TaskListProps> = ({
   viewMode,
   onTaskUpdate,
   onTaskDelete,
+  onRefresh,
   categories,
 }) => {
   if (tasks.length === 0) {
@@ -33,8 +35,9 @@ const TaskList: React.FC<TaskListProps> = ({
           key={task.id}
           task={task}
           categories={categories}
-          onUpdate={(updates) => onTaskUpdate(task.id, updates)}
-          onDelete={() => onTaskDelete(task.id)}
+          onUpdate={async (updates) => onTaskUpdate(task.id, updates)}
+          onDelete={async () => onTaskDelete(task.id)}
+          onRefresh={onRefresh}
           viewMode={viewMode}
         />
       ))}

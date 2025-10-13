@@ -28,13 +28,13 @@ export interface Category {
 }
 
 export enum RecurrenceType {
-  None = "None",
-  Daily = "Daily",
-  Weekdays = "Weekdays",
-  Weekly = "Weekly",
-  Monthly = "Monthly",
-  Yearly = "Yearly",
-  Custom = "Custom"
+  None = 0,
+  Daily = 1,
+  Weekdays = 2,
+  Weekly = 3,
+  Monthly = 4,
+  Yearly = 5,
+  Custom = 6
 }
 
 export interface CreateTaskDto {
@@ -78,3 +78,11 @@ export interface UpdateStepDto {
 export type TaskView = 'myday' | 'important' | 'planned' | 'tasks';
 export type SortBy = 'importance' | 'duedate' | 'alphabetically' | 'creationdate';
 export type ViewMode = 'list' | 'grid';
+
+// Application constants
+export const APP_LIMITS = {
+  MAX_STEPS_PER_TASK: 100,
+  MAX_TASK_TITLE_LENGTH: 255,
+  MAX_STEP_TITLE_LENGTH: 255,
+  MAX_CATEGORY_NAME_LENGTH: 100,
+} as const;

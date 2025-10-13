@@ -152,6 +152,7 @@ const PlannedView: React.FC<PlannedViewProps> = ({ categories }) => {
                 viewMode={viewMode}
                 onTaskUpdate={handleTaskUpdate}
                 onTaskDelete={handleTaskDelete}
+                onRefresh={loadTasks}
                 categories={categories}
               />
             </div>

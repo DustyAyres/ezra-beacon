@@ -9,5 +9,4 @@ public class TaskStep
     public bool IsCompleted { get; set; }
     public int Order { get; set; }
     public Guid TaskItemId { get; set; }
-    public TaskItem TaskItem { get; set; } = null!;
 }

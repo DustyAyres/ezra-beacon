@@ -78,3 +78,11 @@ export interface UpdateStepDto {
 export type TaskView = 'myday' | 'important' | 'planned' | 'tasks';
 export type SortBy = 'importance' | 'duedate' | 'alphabetically' | 'creationdate';
 export type ViewMode = 'list' | 'grid';
+
+// Application constants
+export const APP_LIMITS = {
+  MAX_STEPS_PER_TASK: 100,
+  MAX_TASK_TITLE_LENGTH: 255,
+  MAX_STEP_TITLE_LENGTH: 255,
+  MAX_CATEGORY_NAME_LENGTH: 100,
+} as const;

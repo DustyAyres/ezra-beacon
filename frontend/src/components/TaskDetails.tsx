@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { Task, TaskStep, Category, RecurrenceType } from '../types';
+import { Task, TaskStep, Category, RecurrenceType, APP_LIMITS } from '../types';
 import api from '../services/api';
 import './TaskDetails.css';
 
@@ -87,7 +87,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   };
 
   const handleAddStep = () => {
-    if (newStepTitle.trim() && localSteps.length + newSteps.length < 100) {
+    if (newStepTitle.trim() && localSteps.length + newSteps.length < APP_LIMITS.MAX_STEPS_PER_TASK) {
       const tempId = `temp-${Date.now()}`;
       setNewSteps([...newSteps, { title: newStepTitle.trim(), tempId }]);
       setNewStepTitle('');
@@ -139,7 +139,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              maxLength={255}
+              maxLength={APP_LIMITS.MAX_TASK_TITLE_LENGTH}
             />
           </div>
 
@@ -180,7 +180,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           </div>
 
           <div className="form-group">
-            <label>Steps ({localSteps.length + newSteps.length}/100)</label>
+            <label>Steps ({localSteps.length + newSteps.length}/{APP_LIMITS.MAX_STEPS_PER_TASK})</label>
             <div className="steps-list">
               {/* Render existing steps */}
               {localSteps.map((step) => (
@@ -220,7 +220,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 </div>
               ))}
             </div>
-            {localSteps.length + newSteps.length < 100 && (
+            {localSteps.length + newSteps.length < APP_LIMITS.MAX_STEPS_PER_TASK && (
               <div className="add-step">
                 <input
                   type="text"
@@ -228,7 +228,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                   value={newStepTitle}
                   onChange={(e) => setNewStepTitle(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleAddStep()}
-                  maxLength={255}
+                  maxLength={APP_LIMITS.MAX_STEP_TITLE_LENGTH}
                 />
                 <button onClick={handleAddStep}>Add</button>
               </div>

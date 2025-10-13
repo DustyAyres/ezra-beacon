@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
+using EzraBeacon.Core;
 using EzraBeacon.Core.Entities;
 using EzraBeacon.Infrastructure.Data;
 using System.Security.Claims;
@@ -198,9 +199,9 @@ public class TasksController : ControllerBase
             return NotFound();
         }
 
-        if (task.Steps.Count >= 100)
+        if (task.Steps.Count >= AppConstants.MaxStepsPerTask)
         {
-            return BadRequest("Task cannot have more than 100 steps");
+            return BadRequest($"Task cannot have more than {AppConstants.MaxStepsPerTask} steps");
         }
 
         var step = new TaskStep

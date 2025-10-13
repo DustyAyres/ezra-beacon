@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using EzraBeacon.Core;
 using EzraBeacon.Core.Entities;
 
 namespace EzraBeacon.Infrastructure.Data;
@@ -22,7 +23,7 @@ public class EzraBeaconContext : DbContext
         modelBuilder.Entity<TaskItem>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(AppConstants.MaxTaskTitleLength);
             entity.Property(e => e.UserId).IsRequired();
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => new { e.UserId, e.DueDate });
@@ -38,7 +39,7 @@ public class EzraBeaconContext : DbContext
         modelBuilder.Entity<TaskStep>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(AppConstants.MaxStepTitleLength);
             entity.HasIndex(e => new { e.TaskItemId, e.Order });
 
             entity.HasOne<TaskItem>()
@@ -51,8 +52,8 @@ public class EzraBeaconContext : DbContext
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.ColorHex).IsRequired().HasMaxLength(7);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(AppConstants.MaxCategoryNameLength);
+            entity.Property(e => e.ColorHex).IsRequired().HasMaxLength(AppConstants.MaxCategoryColorLength);
             entity.Property(e => e.UserId).IsRequired();
             entity.HasIndex(e => new { e.UserId, e.Name }).IsUnique();
         });

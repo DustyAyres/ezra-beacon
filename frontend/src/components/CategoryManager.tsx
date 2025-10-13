@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Category } from '../types';
+import { Category, APP_LIMITS } from '../types';
 import api from '../services/api';
 import './CategoryManager.css';
 
@@ -103,7 +103,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
                 placeholder="Category name"
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
-                maxLength={100}
+                maxLength={APP_LIMITS.MAX_CATEGORY_NAME_LENGTH}
               />
               <div className="color-picker">
                 <div
@@ -151,7 +151,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
                           type="text"
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
-                          maxLength={100}
+                          maxLength={APP_LIMITS.MAX_CATEGORY_NAME_LENGTH}
                         />
                         <div className="color-picker-inline">
                           <div

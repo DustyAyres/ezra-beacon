@@ -135,7 +135,6 @@ jobs:
       run: |
         dotnet format --verify-no-changes --verbosity diagnostic
       working-directory: ./backend
-      continue-on-error: true
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -151,7 +150,6 @@ jobs:
     - name: ESLint Check
       run: npm run lint || true
       working-directory: ./frontend
-      continue-on-error: true
     
     # TODO: Add more quality checks as needed
     # - name: Run SonarCloud Scan

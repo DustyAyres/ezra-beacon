@@ -96,6 +96,11 @@
 
 .steps-list {
   margin-bottom: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 8px;
 }
 
 .step-item {
@@ -119,6 +124,17 @@
 .step-item span.completed {
   text-decoration: line-through;
   color: var(--text-secondary);
+}
+
+.step-item.new-step {
+  background-color: rgba(255, 207, 51, 0.1);
+  padding: 4px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.step-item.new-step span {
+  font-style: italic;
 }
 
 .step-delete {

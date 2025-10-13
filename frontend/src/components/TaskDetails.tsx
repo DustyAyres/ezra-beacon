@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { Task, Category, RecurrenceType } from '../types';
+import { Task, TaskStep, Category, RecurrenceType } from '../types';
 import api from '../services/api';
 import './TaskDetails.css';
 
@@ -26,48 +26,80 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const [categoryId, setCategoryId] = useState(task.categoryId || '');
   const [recurrenceType, setRecurrenceType] = useState(task.recurrenceType || RecurrenceType.None);
   const [newStepTitle, setNewStepTitle] = useState('');
+  
+  // Local state for steps management
+  const [localSteps, setLocalSteps] = useState<TaskStep[]>([...task.steps]);
+  const [newSteps, setNewSteps] = useState<{ title: string; tempId: string }[]>([]);
+  const [deletedStepIds, setDeletedStepIds] = useState<string[]>([]);
+  const [updatedSteps, setUpdatedSteps] = useState<Record<string, Partial<TaskStep>>>({});
 
-  const handleSave = () => {
-    const updates: Partial<Task> = {
-      title,
-      dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
-      categoryId: categoryId || undefined,
-      recurrenceType,
-    };
-    onUpdate(updates);
-    onClose();
-  };
+  const handleSave = async () => {
+    try {
+      // Update task details
+      const updates: Partial<Task> = {
+        title,
+        dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
+        categoryId: categoryId || undefined,
+        recurrenceType,
+      };
+      await onUpdate(updates);
 
-  const handleAddStep = async () => {
-    if (newStepTitle.trim()) {
-      try {
-        await api.addStep(task.id, { title: newStepTitle.trim() });
-        setNewStepTitle('');
-        // Refresh task data
-        window.location.reload(); // Simple refresh for now
-      } catch (error) {
-        console.error('Failed to add step:', error);
+      // Handle step changes
+      // 1. Delete removed steps
+      for (const stepId of deletedStepIds) {
+        await api.deleteStep(task.id, stepId);
       }
+
+      // 2. Update existing steps
+      for (const [stepId, updates] of Object.entries(updatedSteps)) {
+        await api.updateStep(task.id, stepId, updates);
+      }
+
+      // 3. Add new steps
+      for (const newStep of newSteps) {
+        await api.addStep(task.id, { title: newStep.title });
+      }
+
+      // Refresh and close
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to save changes:', error);
     }
   };
 
-  const handleStepToggle = async (stepId: string, isCompleted: boolean) => {
-    try {
-      await api.updateStep(task.id, stepId, { isCompleted });
-      // Refresh task data
-      window.location.reload(); // Simple refresh for now
-    } catch (error) {
-      console.error('Failed to update step:', error);
+  const handleAddStep = () => {
+    if (newStepTitle.trim() && localSteps.length + newSteps.length < 100) {
+      const tempId = `temp-${Date.now()}`;
+      setNewSteps([...newSteps, { title: newStepTitle.trim(), tempId }]);
+      setNewStepTitle('');
     }
   };
 
-  const handleStepDelete = async (stepId: string) => {
-    try {
-      await api.deleteStep(task.id, stepId);
-      // Refresh task data
-      window.location.reload(); // Simple refresh for now
-    } catch (error) {
-      console.error('Failed to delete step:', error);
+  const handleStepToggle = (stepId: string, isCompleted: boolean) => {
+    // Update local state for existing steps
+    if (!stepId.startsWith('temp-')) {
+      setLocalSteps(localSteps.map(step => 
+        step.id === stepId ? { ...step, isCompleted } : step
+      ));
+      setUpdatedSteps({
+        ...updatedSteps,
+        [stepId]: { ...updatedSteps[stepId], isCompleted }
+      });
+    }
+  };
+
+  const handleStepDelete = (stepId: string) => {
+    if (stepId.startsWith('temp-')) {
+      // Remove from new steps
+      const tempId = stepId;
+      setNewSteps(newSteps.filter(step => step.tempId !== tempId));
+    } else {
+      // Mark existing step for deletion
+      setLocalSteps(localSteps.filter(step => step.id !== stepId));
+      setDeletedStepIds([...deletedStepIds, stepId]);
+      // Remove from updated steps if it was there
+      const { [stepId]: _, ...rest } = updatedSteps;
+      setUpdatedSteps(rest);
     }
   };
 
@@ -129,16 +161,19 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           </div>
 
           <div className="form-group">
-            <label>Steps ({task.steps.length}/100)</label>
+            <label>Steps ({localSteps.length + newSteps.length}/100)</label>
             <div className="steps-list">
-              {task.steps.map((step) => (
+              {/* Render existing steps */}
+              {localSteps.map((step) => (
                 <div key={step.id} className="step-item">
                   <input
                     type="checkbox"
-                    checked={step.isCompleted}
+                    checked={updatedSteps[step.id]?.isCompleted ?? step.isCompleted}
                     onChange={(e) => handleStepToggle(step.id, e.target.checked)}
                   />
-                  <span className={step.isCompleted ? 'completed' : ''}>{step.title}</span>
+                  <span className={(updatedSteps[step.id]?.isCompleted ?? step.isCompleted) ? 'completed' : ''}>
+                    {step.title}
+                  </span>
                   <button
                     className="step-delete"
                     onClick={() => handleStepDelete(step.id)}
@@ -147,8 +182,26 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                   </button>
                 </div>
               ))}
+              
+              {/* Render new steps */}
+              {newSteps.map((step) => (
+                <div key={step.tempId} className="step-item new-step">
+                  <input
+                    type="checkbox"
+                    checked={false}
+                    disabled
+                  />
+                  <span>{step.title}</span>
+                  <button
+                    className="step-delete"
+                    onClick={() => handleStepDelete(step.tempId)}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                </div>
+              ))}
             </div>
-            {task.steps.length < 100 && (
+            {localSteps.length + newSteps.length < 100 && (
               <div className="add-step">
                 <input
                   type="text"

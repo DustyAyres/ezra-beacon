@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace EzraBeacon.Core.Entities;
 
@@ -10,7 +9,4 @@ public class Category
     public string ColorHex { get; set; } = "#ffcf33"; // Default yellow color
     public string UserId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
-    
-    // Navigation properties
-    public List<TaskItem> TaskItems { get; set; } = new();
 }

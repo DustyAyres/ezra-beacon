@@ -93,7 +93,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<TaskItem>> CreateTask(CreateTaskDto dto)
+    public async Task<ActionResult<TaskItem>> CreateTask([FromBody] CreateTaskDto dto)
     {
         var userId = GetUserId();
         
@@ -130,7 +130,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTask(Guid id, UpdateTaskDto dto)
+    public async Task<IActionResult> UpdateTask(Guid id, [FromBody] UpdateTaskDto dto)
     {
         var userId = GetUserId();
         var task = await _context.TaskItems
@@ -186,7 +186,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost("{taskId}/steps")]
-    public async Task<ActionResult<TaskStep>> AddStep(Guid taskId, CreateStepDto dto)
+    public async Task<ActionResult<TaskStep>> AddStep(Guid taskId, [FromBody] CreateStepDto dto)
     {
         var userId = GetUserId();
         var task = await _context.TaskItems
@@ -218,7 +218,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{taskId}/steps/{stepId}")]
-    public async Task<IActionResult> UpdateStep(Guid taskId, Guid stepId, UpdateStepDto dto)
+    public async Task<IActionResult> UpdateStep(Guid taskId, Guid stepId, [FromBody] UpdateStepDto dto)
     {
         var userId = GetUserId();
         var task = await _context.TaskItems

@@ -28,13 +28,13 @@ export interface Category {
 }
 
 export enum RecurrenceType {
-  None = "None",
-  Daily = "Daily",
-  Weekdays = "Weekdays",
-  Weekly = "Weekly",
-  Monthly = "Monthly",
-  Yearly = "Yearly",
-  Custom = "Custom"
+  None = 0,
+  Daily = 1,
+  Weekdays = 2,
+  Weekly = 3,
+  Monthly = 4,
+  Yearly = 5,
+  Custom = 6
 }
 
 export interface CreateTaskDto {

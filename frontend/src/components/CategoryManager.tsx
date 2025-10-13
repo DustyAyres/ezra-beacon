@@ -35,15 +35,19 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   const handleCreateCategory = async () => {
     if (newCategoryName.trim()) {
       try {
-        await api.createCategory({
+        const categoryData = {
           name: newCategoryName.trim(),
           colorHex: newCategoryColor,
-        });
+        };
+        await api.createCategory(categoryData);
         setNewCategoryName('');
         setNewCategoryColor('#ffcf33');
         onCategoriesChange();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to create category:', error);
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+        }
       }
     }
   };

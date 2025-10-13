@@ -55,7 +55,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Category>> CreateCategory(CreateCategoryDto dto)
+    public async Task<ActionResult<Category>> CreateCategory([FromBody] CreateCategoryDto dto)
     {
         var userId = GetUserId();
 
@@ -90,7 +90,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryDto dto)
+    public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryDto dto)
     {
         var userId = GetUserId();
         var category = await _context.Categories

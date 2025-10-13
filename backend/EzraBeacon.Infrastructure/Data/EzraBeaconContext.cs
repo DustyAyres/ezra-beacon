@@ -29,7 +29,7 @@ public class EzraBeaconContext : DbContext
             entity.HasIndex(e => new { e.UserId, e.IsImportant });
 
             entity.HasOne(e => e.Category)
-                .WithMany(c => c.TaskItems)
+                .WithMany()
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
@@ -41,7 +41,7 @@ public class EzraBeaconContext : DbContext
             entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
             entity.HasIndex(e => new { e.TaskItemId, e.Order });
 
-            entity.HasOne(e => e.TaskItem)
+            entity.HasOne<TaskItem>()
                 .WithMany(t => t.Steps)
                 .HasForeignKey(e => e.TaskItemId)
                 .OnDelete(DeleteBehavior.Cascade);

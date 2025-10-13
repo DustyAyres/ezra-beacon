@@ -117,7 +117,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             <label>Repeat</label>
             <select
               value={recurrenceType}
-              onChange={(e) => setRecurrenceType(e.target.value as RecurrenceType)}
+              onChange={(e) => setRecurrenceType(Number(e.target.value) as RecurrenceType)}
             >
               <option value={RecurrenceType.None}>Never</option>
               <option value={RecurrenceType.Daily}>Daily</option>

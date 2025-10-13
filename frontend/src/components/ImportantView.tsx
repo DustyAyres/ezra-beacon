@@ -20,6 +20,7 @@ const ImportantView: React.FC<ImportantViewProps> = ({ categories }) => {
 
   useEffect(() => {
     loadTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, selectedCategory]);
 
   const loadTasks = async () => {

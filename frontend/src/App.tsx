@@ -14,7 +14,7 @@ import { useDevAuth } from './hooks/useDevAuth';
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
-  const { instance, inProgress } = useMsal();
+  const { inProgress } = useMsal();
   const { isDevelopment, isDevAuthReady } = useDevAuth();
   const [categories, setCategories] = useState<Category[]>([]);
 

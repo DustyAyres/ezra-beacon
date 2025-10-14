@@ -175,13 +175,35 @@ public class TasksController : ControllerBase
             }
         }
 
-        task.Title = dto.Title ?? task.Title;
-        task.DueDate = dto.DueDate;
-        task.IsImportant = dto.IsImportant ?? task.IsImportant;
-        task.IsCompleted = dto.IsCompleted ?? task.IsCompleted;
-        task.RecurrenceType = dto.RecurrenceType ?? task.RecurrenceType;
-        task.CustomRecurrencePattern = dto.CustomRecurrencePattern ?? task.CustomRecurrencePattern;
-        task.CategoryId = dto.CategoryId;
+        // Only update fields that are provided in the DTO
+        if (dto.Title != null)
+            task.Title = dto.Title;
+        
+        // TODO: Is there a simpler way to detect a simple Important Flag toggle? 
+        var isSimpleToggle = (dto.IsImportant.HasValue || dto.IsCompleted.HasValue) &&
+                             dto.Title == null && 
+                             dto.DueDate == null && 
+                             dto.RecurrenceType == null && 
+                             dto.CategoryId == null;
+        
+        if (!isSimpleToggle && dto.DueDate != task.DueDate)
+            task.DueDate = dto.DueDate;
+        
+        if (dto.IsImportant.HasValue)
+            task.IsImportant = dto.IsImportant.Value;
+        
+        if (dto.IsCompleted.HasValue)
+            task.IsCompleted = dto.IsCompleted.Value;
+        
+        if (dto.RecurrenceType.HasValue)
+            task.RecurrenceType = dto.RecurrenceType.Value;
+        
+        if (dto.CustomRecurrencePattern != null)
+            task.CustomRecurrencePattern = dto.CustomRecurrencePattern;
+        
+        // Similar logic for CategoryId - don't clear it on simple toggles
+        if (!isSimpleToggle && dto.CategoryId != task.CategoryId)
+            task.CategoryId = dto.CategoryId;
         task.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();

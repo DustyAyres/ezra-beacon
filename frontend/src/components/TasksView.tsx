@@ -8,9 +8,10 @@ import './TaskView.css';
 
 interface TasksViewProps {
   categories: Category[];
+  onTaskChange?: () => void;
 }
 
-const TasksView: React.FC<TasksViewProps> = ({ categories }) => {
+const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>('creationdate');
@@ -43,6 +44,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories }) => {
         categoryId: selectedCategory || undefined,
       });
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to create task:', error);
     }
@@ -52,6 +54,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories }) => {
     try {
       await api.updateTask(taskId, updates);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to update task:', error);
     }
@@ -61,6 +64,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories }) => {
     try {
       await api.deleteTask(taskId);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to delete task:', error);
     }

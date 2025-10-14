@@ -8,9 +8,10 @@ import './TaskView.css';
 
 interface ImportantViewProps {
   categories: Category[];
+  onTaskChange?: () => void;
 }
 
-const ImportantView: React.FC<ImportantViewProps> = ({ categories }) => {
+const ImportantView: React.FC<ImportantViewProps> = ({ categories, onTaskChange }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>('creationdate');
@@ -44,6 +45,7 @@ const ImportantView: React.FC<ImportantViewProps> = ({ categories }) => {
         categoryId: selectedCategory || undefined,
       });
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to create task:', error);
     }
@@ -53,6 +55,7 @@ const ImportantView: React.FC<ImportantViewProps> = ({ categories }) => {
     try {
       await api.updateTask(taskId, updates);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to update task:', error);
     }
@@ -62,6 +65,7 @@ const ImportantView: React.FC<ImportantViewProps> = ({ categories }) => {
     try {
       await api.deleteTask(taskId);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to delete task:', error);
     }

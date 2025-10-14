@@ -9,9 +9,10 @@ import './TaskView.css';
 
 interface PlannedViewProps {
   categories: Category[];
+  onTaskChange?: () => void;
 }
 
-const PlannedView: React.FC<PlannedViewProps> = ({ categories }) => {
+const PlannedView: React.FC<PlannedViewProps> = ({ categories, onTaskChange }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>('duedate');
@@ -45,6 +46,7 @@ const PlannedView: React.FC<PlannedViewProps> = ({ categories }) => {
         categoryId: selectedCategory || undefined,
       });
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to create task:', error);
     }
@@ -54,6 +56,7 @@ const PlannedView: React.FC<PlannedViewProps> = ({ categories }) => {
     try {
       await api.updateTask(taskId, updates);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to update task:', error);
     }
@@ -63,6 +66,7 @@ const PlannedView: React.FC<PlannedViewProps> = ({ categories }) => {
     try {
       await api.deleteTask(taskId);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to delete task:', error);
     }

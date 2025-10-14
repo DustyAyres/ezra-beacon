@@ -9,9 +9,10 @@ import './TaskView.css';
 
 interface MyDayViewProps {
   categories: Category[];
+  onTaskChange?: () => void;
 }
 
-const MyDayView: React.FC<MyDayViewProps> = ({ categories }) => {
+const MyDayView: React.FC<MyDayViewProps> = ({ categories, onTaskChange }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>('creationdate');
@@ -45,6 +46,7 @@ const MyDayView: React.FC<MyDayViewProps> = ({ categories }) => {
         categoryId: selectedCategory || undefined,
       });
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to create task:', error);
     }
@@ -54,6 +56,7 @@ const MyDayView: React.FC<MyDayViewProps> = ({ categories }) => {
     try {
       await api.updateTask(taskId, updates);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to update task:', error);
     }
@@ -63,6 +66,7 @@ const MyDayView: React.FC<MyDayViewProps> = ({ categories }) => {
     try {
       await api.deleteTask(taskId);
       await loadTasks();
+      onTaskChange?.();
     } catch (error) {
       console.error('Failed to delete task:', error);
     }

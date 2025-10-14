@@ -30,6 +30,27 @@ public class TasksController : ControllerBase
                throw new UnauthorizedAccessException("User ID not found");
     }
 
+    [HttpGet("counts")]
+    public async Task<ActionResult<TaskCountsDto>> GetTaskCounts()
+    {
+        var userId = GetUserId();
+        var today = DateTime.UtcNow.Date;
+        
+        var tasks = await _context.TaskItems
+            .Where(t => t.UserId == userId && !t.IsCompleted)
+            .ToListAsync();
+        
+        var counts = new TaskCountsDto
+        {
+            MyDay = tasks.Count(t => t.DueDate?.Date == today),
+            Important = tasks.Count(t => t.IsImportant),
+            Planned = tasks.Count(t => t.DueDate != null),
+            All = tasks.Count
+        };
+        
+        return counts;
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks(
         [FromQuery] string? view = null,
@@ -272,6 +293,14 @@ public class TasksController : ControllerBase
 }
 
 // DTOs
+public class TaskCountsDto
+{
+    public int MyDay { get; set; }
+    public int Important { get; set; }
+    public int Planned { get; set; }
+    public int All { get; set; }
+}
+
 public class CreateTaskDto
 {
     public string Title { get; set; } = string.Empty;

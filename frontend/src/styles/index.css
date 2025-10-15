@@ -81,7 +81,5 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  :root {
-    --sidebar-width: 0px;
-  }
+  /* Sidebar width remains the same on mobile - it slides in/out */
 }

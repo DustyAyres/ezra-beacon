@@ -93,3 +93,7 @@ export const APP_LIMITS = {
   MAX_STEP_TITLE_LENGTH: 255,
   MAX_CATEGORY_NAME_LENGTH: 100,
 } as const;
+
+export const APP_BREAKPOINTS = {
+  MOBILE: 768,
+} as const;

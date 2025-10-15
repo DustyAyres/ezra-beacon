@@ -3,8 +3,9 @@ import { isToday, isTomorrow, isThisWeek, startOfToday } from 'date-fns';
 import TaskList from './TaskList';
 import AddTask from './AddTask';
 import ViewControls from './ViewControls';
-import { Task, Category, SortBy, ViewMode } from '../types';
-import api from '../services/api';
+import { Task, SortBy, ViewMode } from '../types';
+import { Category } from '../../categories/types';
+import api from '../../../lib/api';
 import './TaskView.css';
 
 interface PlannedViewProps {

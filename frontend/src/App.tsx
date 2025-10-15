@@ -3,14 +3,15 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { InteractionStatus } from '@azure/msal-browser';
 import Layout from './components/Layout';
-import MyDayView from './components/MyDayView';
-import ImportantView from './components/ImportantView';
-import PlannedView from './components/PlannedView';
-import TasksView from './components/TasksView';
-import LoginPage from './components/LoginPage';
-import { Category, TaskCounts } from './types';
-import api from './services/api';
-import { useDevAuth } from './hooks/useDevAuth';
+import MyDayView from './features/tasks/components/MyDayView';
+import ImportantView from './features/tasks/components/ImportantView';
+import PlannedView from './features/tasks/components/PlannedView';
+import TasksView from './features/tasks/components/TasksView';
+import LoginPage from './features/auth/components/LoginPage';
+import { Category } from './features/categories/types';
+import { TaskCounts } from './features/tasks/types';
+import api from './lib/api';
+import { useDevAuth } from './features/auth/hooks/useDevAuth';
 
 function App() {
   const isAuthenticated = useIsAuthenticated();

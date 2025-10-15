@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Category, APP_LIMITS } from '../types';
-import api from '../services/api';
+import { Category } from '../types';
+import { APP_LIMITS } from '../../../config/constants';
+import api from '../../../lib/api';
 import './CategoryManager.css';
 
 interface CategoryManagerProps {

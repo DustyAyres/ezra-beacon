@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import TaskDetails from './TaskDetails';
-import { Task, Category, ViewMode } from '../types';
+import { Task, ViewMode } from '../types';
+import { Category } from '../../categories/types';
 import './TaskItem.css';
 
 interface TaskItemProps {

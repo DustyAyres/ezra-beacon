@@ -68,15 +68,29 @@ const TaskItem: React.FC<TaskItemProps> = ({
               </span>
             )}
           </div>
+          {viewMode === 'grid' && (
+            <button
+              className={`task-important-grid ${task.isImportant ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleImportant();
+              }}
+              aria-label={task.isImportant ? 'Remove importance' : 'Mark as important'}
+            >
+              <i className={`${task.isImportant ? 'fas' : 'far'} fa-star`}></i>
+            </button>
+          )}
         </div>
 
-        <button
-          className={`task-important ${task.isImportant ? 'active' : ''}`}
-          onClick={handleToggleImportant}
-          aria-label={task.isImportant ? 'Remove importance' : 'Mark as important'}
-        >
-          <i className={`${task.isImportant ? 'fas' : 'far'} fa-star`}></i>
-        </button>
+        {viewMode === 'list' && (
+          <button
+            className={`task-important ${task.isImportant ? 'active' : ''}`}
+            onClick={handleToggleImportant}
+            aria-label={task.isImportant ? 'Remove importance' : 'Mark as important'}
+          >
+            <i className={`${task.isImportant ? 'fas' : 'far'} fa-star`}></i>
+          </button>
+        )}
       </div>
 
       {showDetails && (

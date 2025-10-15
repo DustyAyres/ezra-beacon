@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { TaskCounts } from '../types';
+import { TaskCounts, APP_BREAKPOINTS } from '../types';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -20,7 +20,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories, 
 
   return (
     <>
-      {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
       <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
         <nav className="sidebar-nav">
           {navItems.map((item) => (
@@ -28,7 +27,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories, 
               key={item.path}
               to={item.path}
               className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
-              onClick={() => isOpen && onClose()}
+              onClick={() => {
+                  if (window.innerWidth <= APP_BREAKPOINTS.MOBILE) {
+                    onClose();
+                  }
+              }}
             >
               <i className={`fas ${item.icon} sidebar-icon`}></i>
               <span className="sidebar-label">{item.label}</span>
@@ -38,11 +41,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories, 
         </nav>
         
         <div className="sidebar-footer">
-          <button className="tertiary w-button" onClick={onManageCategories}>
+          <button onClick={() => {
+            onManageCategories();
+                  if (window.innerWidth <= APP_BREAKPOINTS.MOBILE) {
+                    onClose();
+                  }
+          }}>
             Manage Categories
           </button>
         </div>
       </aside>
+      {isOpen && window.innerWidth <= APP_BREAKPOINTS.MOBILE && (
+        <div className="sidebar-overlay" onClick={onClose} />
+      )}
     </>
   );
 };

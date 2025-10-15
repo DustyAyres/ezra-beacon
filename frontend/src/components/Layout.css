@@ -129,30 +129,62 @@
 /* Mobile Styles */
 @media (max-width: 768px) {
   .menu-button {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-icon {
+    font-size: 20px;
   }
 
   .header {
     padding: 0 16px;
+    height: var(--header-height);
+  }
+
+  .header-content {
+    justify-content: space-between;
   }
 
   .header-logo {
-    display: none;
+    height: 24px;
+    margin-right: 0;
   }
 
   .header-nav {
     display: none;
   }
 
-  .header-content {
-    justify-content: flex-end;
+  .header-user {
+    gap: 8px;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .logout-button {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 
   .main-content {
     padding: 16px;
+    margin-left: 0;
   }
 
   .page-title {
     font-size: 24px;
+  }
+
+  /* Prevent scrolling when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+  
+  /* Hide overflow on layout body when sidebar is open */
+  .sidebar-open .layout-body {
+    overflow: hidden;
   }
 }

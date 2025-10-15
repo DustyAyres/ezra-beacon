@@ -138,17 +138,41 @@
 .task-item.grid .task-content {
   width: 100%;
   margin-top: 8px;
+  position: relative;
 }
 
 .task-item.grid .task-title {
   white-space: normal;
   margin-bottom: 8px;
+  display: block;
+  padding-right: 30px; /* Space for the star button */
 }
 
-.task-item.grid .task-important {
+/* Star button inside grid cards */
+.task-important-grid {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: all 0.2s;
+  padding: 4px;
+}
+
+.task-important-grid:hover {
+  opacity: 0.6;
+}
+
+.task-important-grid.active {
+  opacity: 1;
+  color: var(--important-color);
+}
+
+.task-important-grid i {
+  font-size: 18px;
 }
 
 /* Mobile Styles */

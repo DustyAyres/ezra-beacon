@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMsal } from '@azure/msal-react';
 import Sidebar from './Sidebar';
@@ -19,6 +19,20 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
+
+  // Add/remove body class for mobile sidebar
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.classList.add('sidebar-open');
+    } else {
+      document.body.classList.remove('sidebar-open');
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('sidebar-open');
+    };
+  }, [isSidebarOpen]);
 
   const handleLogout = () => {
     if (process.env.REACT_APP_BYPASS_AUTH === 'true') {

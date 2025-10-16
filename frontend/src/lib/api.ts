@@ -11,12 +11,10 @@ import {
   TaskView,
   SortBy,
   TaskCounts,
-} from '../features/tasks/types';
-import {
   Category,
   CreateCategoryDto,
   UpdateCategoryDto,
-} from '../features/categories/types';
+} from '../lib/types';
 
 class ApiService {
   private api: AxiosInstance;

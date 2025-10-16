@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mobile View Test - Ezra Beacon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .device-frame {
+            width: 375px;
+            height: 667px;
+            border: 16px solid #333;
+            border-radius: 36px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+        }
+        .device-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .test-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .test-info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+        .test-steps {
+            margin: 20px 0;
+        }
+        .test-steps li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.fixed {
+            background: #4caf50;
+            color: white;
+        }
+        .status.pending {
+            background: #ff9800;
+            color: white;
+        }
+        .desktop-link {
+            display: block;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .desktop-link a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Ezra Beacon - Mobile View Test</h1>
+        
+        <div class="test-info">
+            <h2>Test Summary</h2>
+            <p><strong>Issue:</strong> Mobile view shows overlapping sidebar and malformed UI</p>
+            <p><strong>Fix Applied:</strong> <span class="status fixed">FIXED</span></p>
+            <ul>
+                <li>✅ Fixed sidebar positioning (z-index: 1000)</li>
+                <li>✅ Added overlay backdrop (z-index: 999)</li>
+                <li>✅ Sidebar slides from left with proper animation</li>
+                <li>✅ Main content hidden when sidebar is open</li>
+                <li>✅ Hamburger menu properly styled</li>
+                <li>✅ Mobile-optimized header layout</li>
+            </ul>
+        </div>
+
+        <h2>Mobile Device Preview (iPhone 8 Size)</h2>
+        <div class="device-frame">
+            <div class="device-screen">
+                <iframe src="http://localhost:3000" class="test-iframe"></iframe>
+            </div>
+        </div>
+
+        <div class="test-steps">
+            <h2>Test Steps:</h2>
+            <ol>
+                <li>The mobile preview above shows the app at 375x667px (iPhone 8 size)</li>
+                <li>Click the hamburger menu (☰) in the top-left to open the sidebar</li>
+                <li>Verify the sidebar slides in from the left with a dark overlay</li>
+                <li>Verify the main content is hidden when sidebar is open</li>
+                <li>Click the overlay or use the sidebar to navigate</li>
+                <li>Test on actual mobile device or browser DevTools mobile mode</li>
+            </ol>
+        </div>
+
+        <div class="desktop-link">
+            <p>To test on desktop with mobile emulation:</p>
+            <a href="http://localhost:3000" target="_blank">Open Ezra Beacon →</a>
+            <p>Then press F12 and toggle device emulation (Ctrl+Shift+M)</p>
+        </div>
+
+        <div class="test-info">
+            <h3>What was fixed:</h3>
+            <ul>
+                <li><strong>Sidebar Overlay:</strong> Now properly covers the entire screen with semi-transparent backdrop</li>
+                <li><strong>Z-index Hierarchy:</strong> Sidebar (1000) > Overlay (999) > Content</li>
+                <li><strong>Mobile Width:</strong> Sidebar takes 80% width (max 280px) on mobile</li>
+                <li><strong>Body Class:</strong> Added 'sidebar-open' class to body for state management</li>
+                <li><strong>Animations:</strong> Smooth slide-in/out transitions</li>
+                <li><strong>Header:</strong> Mobile-optimized with visible hamburger menu</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Counts Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .count-display {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .count-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .count-item:last-child {
+            border-bottom: none;
+        }
+        .count-value {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ezra Beacon - Task Counts Test</h1>
+    
+    <button onclick="fetchCounts()">Fetch Task Counts</button>
+    
+    <div class="count-display" id="counts">
+        <p>Click the button to fetch task counts...</p>
+    </div>
+    
+    <div id="status"></div>
+
+    <script>
+        async function fetchCounts() {
+            const statusDiv = document.getElementById('status');
+            const countsDiv = document.getElementById('counts');
+            
+            try {
+                statusDiv.innerHTML = '<p>Fetching...</p>';
+                
+                const response = await fetch('http://localhost:5000/api/tasks/counts', {
+                    headers: {
+                        'Authorization': 'Bearer dev-token'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                countsDiv.innerHTML = `
+                    <div class="count-item">
+                        <span>My Day:</span>
+                        <span class="count-value">${data.myDay}</span>
+                    </div>
+                    <div class="count-item">
+                        <span>Important:</span>
+                        <span class="count-value">${data.important}</span>
+                    </div>
+                    <div class="count-item">
+                        <span>Planned:</span>
+                        <span class="count-value">${data.planned}</span>
+                    </div>
+                    <div class="count-item">
+                        <span>All Tasks:</span>
+                        <span class="count-value">${data.all}</span>
+                    </div>
+                `;
+                
+                statusDiv.innerHTML = '<p class="success">✓ Successfully fetched task counts!</p>';
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                console.error('Error fetching counts:', error);
+            }
+        }
+        
+        // Fetch counts automatically on page load
+        window.onload = () => {
+            fetchCounts();
+        };
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SortBy, ViewMode } from '../types';
+import { SortBy, ViewMode } from '../../../types';
 import { Category } from '../../categories/types';
 import './ViewControls.css';
 

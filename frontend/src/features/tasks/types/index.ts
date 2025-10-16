@@ -1,5 +1,7 @@
 import { Category } from '../../categories/types';
+import { RecurrenceType } from '../../../types/api.types';
 
+// Task domain model
 export interface Task {
   id: string;
   title: string;
@@ -21,52 +23,3 @@ export interface TaskStep {
   isCompleted: boolean;
   order: number;
 }
-
-export enum RecurrenceType {
-  None = 0,
-  Daily = 1,
-  Weekdays = 2,
-  Weekly = 3,
-  Monthly = 4,
-  Yearly = 5,
-  Custom = 6
-}
-
-export interface CreateTaskDto {
-  title: string;
-  dueDate?: string;
-  isImportant: boolean;
-  recurrenceType?: RecurrenceType;
-  customRecurrencePattern?: string;
-  categoryId?: string;
-}
-
-export interface UpdateTaskDto {
-  title?: string;
-  dueDate?: string;
-  isImportant?: boolean;
-  isCompleted?: boolean;
-  recurrenceType?: RecurrenceType;
-  customRecurrencePattern?: string;
-  categoryId?: string;
-}
-
-export interface CreateStepDto {
-  title: string;
-}
-
-export interface UpdateStepDto {
-  title?: string;
-  isCompleted?: boolean;
-}
-
-export interface TaskCounts {
-  myDay: number;
-  important: number;
-  planned: number;
-  all: number;
-}
-
-export type TaskView = 'myday' | 'important' | 'planned' | 'tasks';
-export type SortBy = 'importance' | 'duedate' | 'alphabetically' | 'creationdate';
-export type ViewMode = 'list' | 'grid';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { TaskCounts } from '../features/tasks/types';
+import { TaskCounts } from '../types';
 import { APP_BREAKPOINTS } from '../config/constants';
 import './Sidebar.css';
 

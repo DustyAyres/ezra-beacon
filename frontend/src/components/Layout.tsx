@@ -4,7 +4,7 @@ import { useMsal } from '@azure/msal-react';
 import Sidebar from './Sidebar';
 import CategoryManager from '../features/categories/components/CategoryManager';
 import { Category } from '../features/categories/types';
-import { TaskCounts } from '../features/tasks/types';
+import { TaskCounts } from '../types';
 import './Layout.css';
 
 interface LayoutProps {

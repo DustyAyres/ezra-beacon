@@ -9,7 +9,7 @@ import PlannedView from './features/tasks/components/PlannedView';
 import TasksView from './features/tasks/components/TasksView';
 import LoginPage from './features/auth/components/LoginPage';
 import { Category } from './features/categories/types';
-import { TaskCounts } from './features/tasks/types';
+import { TaskCounts } from './types';
 import api from './lib/api';
 import { useDevAuth } from './features/auth/hooks/useDevAuth';
 

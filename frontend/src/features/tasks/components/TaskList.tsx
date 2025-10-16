@@ -1,6 +1,7 @@
 import React from 'react';
 import TaskItem from './TaskItem';
-import { Task, ViewMode } from '../types';
+import { Task } from '../types';
+import { ViewMode } from '../../../types';
 import { Category } from '../../categories/types';
 import './TaskList.css';
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { Task, TaskStep, RecurrenceType } from '../types';
+import { Task, TaskStep } from '../types';
+import { RecurrenceType } from '../../../types';
 import { Category } from '../../categories/types';
 import { APP_LIMITS } from '../../../config/constants';
 import api from '../../../lib/api';

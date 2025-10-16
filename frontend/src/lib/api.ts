@@ -2,21 +2,19 @@ import axios, { AxiosInstance } from 'axios';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { msalInstance } from '../index';
 import { apiConfig } from '../config/authConfig';
+import { Task } from '../features/tasks/types';
+import { Category } from '../features/categories/types';
 import {
-  Task,
+  TaskCounts,
+  TaskView,
+  SortBy,
   CreateTaskDto,
   UpdateTaskDto,
   CreateStepDto,
   UpdateStepDto,
-  TaskView,
-  SortBy,
-  TaskCounts,
-} from '../features/tasks/types';
-import {
-  Category,
   CreateCategoryDto,
   UpdateCategoryDto,
-} from '../features/categories/types';
+} from '../types';
 
 class ApiService {
   private api: AxiosInstance;

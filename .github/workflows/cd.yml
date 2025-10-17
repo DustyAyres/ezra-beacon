@@ -11,7 +11,7 @@ on:
           - dev
   
   workflow_run:
-    workflows: ["CI - Continuous Integration"]
+    workflows: ["CI"]
     types:
       - completed
     branches:
@@ -138,6 +138,11 @@ jobs:
           -backend-config="container_name=${{ secrets.TF_STATE_CONTAINER }}" \
           -backend-config="key=ezrabeacon-${{ steps.env.outputs.name }}.tfstate" \
           -backend-config="resource_group_name=${{ secrets.TF_STATE_RESOURCE_GROUP }}"
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
     
     - name: Terraform Plan
       working-directory: ./terraform
@@ -152,12 +157,22 @@ jobs:
           -var="acr_password=${{ secrets.ACR_PASSWORD }}" \
           -var="docker_image_tag=${{ needs.build-and-push.outputs.image-tag }}" \
           -out=tfplan
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
     
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
       working-directory: ./terraform
       run: |
         terraform apply -auto-approve tfplan
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
     
     - name: Get Terraform Outputs
       if: success()
@@ -167,6 +182,11 @@ jobs:
         echo "BACKEND_URL=$(terraform output -raw backend_url)" >> $GITHUB_ENV
         echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
         echo "CAE_NAME=$(terraform output -raw container_apps_environment_name)" >> $GITHUB_ENV
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_USE_OIDC: true
     
     - name: Update Frontend Container App with correct API URL
       if: success()

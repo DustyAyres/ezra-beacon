@@ -16,7 +16,7 @@ import { useDevAuth } from './features/auth/hooks/useDevAuth';
 function App() {
   const isAuthenticated = useIsAuthenticated();
   const { inProgress } = useMsal();
-  const { isDevelopment, isDevAuthenticated } = useDevAuth();
+  const { isDevAuthenticated } = useDevAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [taskCounts, setTaskCounts] = useState<TaskCounts>({
     myDay: 0,

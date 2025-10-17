@@ -170,8 +170,11 @@ jobs:
     - name: Update Frontend Container App with correct API URL
       if: success()
       run: |
+        # Extract container app name from Terraform output
+        FRONTEND_APP_NAME=$(az containerapp list --resource-group ${{ env.RESOURCE_GROUP }} --query "[?contains(name, 'ca-frontend')].name" -o tsv | head -1)
+        
         az containerapp update \
-          --name ca-frontend-${{ vars.PROJECT_NAME || 'ezrabeacon' }}-${{ steps.env.outputs.name }} \
+          --name $FRONTEND_APP_NAME \
           --resource-group ${{ env.RESOURCE_GROUP }} \
           --set-env-vars "REACT_APP_API_URL=${{ env.BACKEND_URL }}/api" \
           --revision-suffix "api-update-$(date +%s)"

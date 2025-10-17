@@ -19,6 +19,16 @@ variable "location" {
   default     = "eastus"
 }
 
+variable "region_code" {
+  description = "Short region code for resource naming (e.g., ue2 for East US 2, uw2 for West US 2)"
+  type        = string
+  default     = "ue2"
+  validation {
+    condition     = can(regex("^[a-z0-9]{2,5}$", var.region_code))
+    error_message = "Region code must be 2-5 lowercase alphanumeric characters"
+  }
+}
+
 variable "azure_ad_tenant_id" {
   description = "Azure AD Tenant ID"
   type        = string
@@ -97,4 +107,22 @@ variable "max_replicas" {
   description = "Maximum number of replicas"
   type        = number
   default     = 10
+}
+
+variable "scale_rule_concurrent_requests" {
+  description = "Number of concurrent requests to trigger scaling"
+  type        = number
+  default     = 100
+}
+
+variable "scale_rule_cpu_percentage" {
+  description = "CPU percentage to trigger scaling"
+  type        = number
+  default     = 70
+}
+
+variable "scale_rule_memory_percentage" {
+  description = "Memory percentage to trigger scaling"
+  type        = number
+  default     = 80
 }

@@ -36,21 +36,21 @@ provider "azapi" {
 locals {
   common_tags = {
     Environment = var.environment
-    Project     = "ezra-beacon"
+    Project     = var.project_name
     ManagedBy   = "terraform"
   }
 }
 
 # Resource Group
 resource "azurerm_resource_group" "main" {
-  name     = "rg-${var.project_name}-${var.environment}"
+  name     = "rg-${var.project_name}-${var.environment}-${var.region_code}"
   location = var.location
   tags     = local.common_tags
 }
 
 # Virtual Network
 resource "azurerm_virtual_network" "main" {
-  name                = "vnet-${var.project_name}-${var.environment}"
+  name                = "vnet-${var.project_name}-${var.environment}-${var.region_code}"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
@@ -59,7 +59,7 @@ resource "azurerm_virtual_network" "main" {
 
 # Subnet for Container Apps Environment
 resource "azurerm_subnet" "container_apps" {
-  name                 = "snet-containerapp-${var.project_name}-${var.environment}"
+  name                 = "snet-containerapp-${var.project_name}-${var.environment}-${var.region_code}"
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.1.0/23"]  # Larger subnet for Container Apps
@@ -79,7 +79,7 @@ resource "azurerm_subnet" "container_apps" {
 
 # Log Analytics Workspace for Container Apps
 resource "azurerm_log_analytics_workspace" "main" {
-  name                = "log-${var.project_name}-${var.environment}"
+  name                = "log-${var.project_name}-${var.environment}-${var.region_code}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   sku                 = "PerGB2018"
@@ -89,7 +89,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 
 # Container Apps Environment
 resource "azurerm_container_app_environment" "main" {
-  name                       = "cae-${var.project_name}-${var.environment}"
+  name                       = "cae-${var.project_name}-${var.environment}-${var.region_code}"
   location                   = azurerm_resource_group.main.location
   resource_group_name        = azurerm_resource_group.main.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
@@ -101,7 +101,7 @@ resource "azurerm_container_app_environment" "main" {
 
 # Storage Account for SQLite database persistence
 resource "azurerm_storage_account" "main" {
-  name                     = "st${var.project_name}${var.environment}"
+  name                     = "st${var.project_name}${var.environment}${var.region_code}"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
@@ -133,7 +133,7 @@ resource "azurerm_container_app_environment_storage" "sqlite" {
 
 # Container App - Backend
 resource "azurerm_container_app" "backend" {
-  name                         = "ca-backend-${var.project_name}-${var.environment}"
+  name                         = "ca-backend-${var.project_name}-${var.environment}-${var.region_code}"
   container_app_environment_id = azurerm_container_app_environment.main.id
   resource_group_name          = azurerm_resource_group.main.name
   revision_mode                = "Single"
@@ -195,6 +195,32 @@ resource "azurerm_container_app" "backend" {
     min_replicas = var.min_replicas
     max_replicas = var.max_replicas
     
+    # HTTP scaling rule - scale based on concurrent requests
+    http_scale_rule {
+      name                = "http-scaling"
+      concurrent_requests = var.scale_rule_concurrent_requests
+    }
+    
+    # CPU scaling rule
+    custom_scale_rule {
+      name             = "cpu-scaling"
+      custom_rule_type = "cpu"
+      metadata = {
+        type  = "Utilization"
+        value = tostring(var.scale_rule_cpu_percentage)
+      }
+    }
+    
+    # Memory scaling rule
+    custom_scale_rule {
+      name             = "memory-scaling"
+      custom_rule_type = "memory"
+      metadata = {
+        type  = "Utilization"
+        value = tostring(var.scale_rule_memory_percentage)
+      }
+    }
+    
     # Define the volume for SQLite database
     volume {
       name         = "sqlite-volume"
@@ -229,7 +255,7 @@ resource "azurerm_container_app" "backend" {
 
 # Container App - Frontend
 resource "azurerm_container_app" "frontend" {
-  name                         = "ca-frontend-${var.project_name}-${var.environment}"
+  name                         = "ca-frontend-${var.project_name}-${var.environment}-${var.region_code}"
   container_app_environment_id = azurerm_container_app_environment.main.id
   resource_group_name          = azurerm_resource_group.main.name
   revision_mode                = "Single"
@@ -269,6 +295,32 @@ resource "azurerm_container_app" "frontend" {
     
     min_replicas = var.min_replicas
     max_replicas = var.max_replicas
+    
+    # HTTP scaling rule - scale based on concurrent requests
+    http_scale_rule {
+      name                = "http-scaling"
+      concurrent_requests = var.scale_rule_concurrent_requests
+    }
+    
+    # CPU scaling rule
+    custom_scale_rule {
+      name             = "cpu-scaling"
+      custom_rule_type = "cpu"
+      metadata = {
+        type  = "Utilization"
+        value = tostring(var.scale_rule_cpu_percentage)
+      }
+    }
+    
+    # Memory scaling rule
+    custom_scale_rule {
+      name             = "memory-scaling"
+      custom_rule_type = "memory"
+      metadata = {
+        type  = "Utilization"
+        value = tostring(var.scale_rule_memory_percentage)
+      }
+    }
   }
 
   ingress {

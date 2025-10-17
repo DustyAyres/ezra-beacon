@@ -5,6 +5,7 @@ import Sidebar from './Sidebar';
 import CategoryManager from '../features/categories/components/CategoryManager';
 import { Category } from '../features/categories/types';
 import { TaskCounts } from '../types';
+import { useDevAuth } from '../features/auth/hooks/useDevAuth';
 import './Layout.css';
 
 interface LayoutProps {
@@ -17,6 +18,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChange, taskCounts, onTaskCountsChange }) => {
   const { instance, accounts } = useMsal();
+  const { logoutDevAuth, isDevAuthenticated } = useDevAuth();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
@@ -36,8 +38,9 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
   }, [isSidebarOpen]);
 
   const handleLogout = () => {
-    if (process.env.REACT_APP_BYPASS_AUTH === 'true') {
-      // In development mode, just reload the page
+    if (isDevAuthenticated) {
+      // In development mode, use dev logout
+      logoutDevAuth();
       window.location.reload();
     } else {
       instance.logoutPopup();

@@ -13,11 +13,11 @@ public class TaskItem
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string UserId { get; set; } = string.Empty;
-    
+
     // Recurrence
     public RecurrenceType? RecurrenceType { get; set; }
     public string? CustomRecurrencePattern { get; set; }
-    
+
     // Navigation properties
     public Guid? CategoryId { get; set; }
     public Category? Category { get; set; }

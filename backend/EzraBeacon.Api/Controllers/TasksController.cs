@@ -25,9 +25,9 @@ public class TasksController : ControllerBase
 
     private string GetUserId()
     {
-        return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? 
-               User.FindFirst("oid")?.Value ?? 
-               throw new UnauthorizedAccessException("User ID not found");
+        return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+            User.FindFirst("oid")?.Value ??
+            throw new UnauthorizedAccessException("User ID not found");
     }
 
     [HttpGet("counts")]
@@ -35,11 +35,11 @@ public class TasksController : ControllerBase
     {
         var userId = GetUserId();
         var today = DateTime.UtcNow.Date;
-        
+
         var tasks = await _context.TaskItems
             .Where(t => t.UserId == userId && !t.IsCompleted)
             .ToListAsync();
-        
+
         var counts = new TaskCountsDto
         {
             MyDay = tasks.Count(t => t.DueDate?.Date == today),
@@ -47,7 +47,7 @@ public class TasksController : ControllerBase
             Planned = tasks.Count(t => t.DueDate != null),
             All = tasks.Count
         };
-        
+
         return counts;
     }
 
@@ -118,13 +118,13 @@ public class TasksController : ControllerBase
     public async Task<ActionResult<TaskItem>> CreateTask([FromBody] CreateTaskDto dto)
     {
         var userId = GetUserId();
-        
+
         // Validate category exists and belongs to user
         if (dto.CategoryId.HasValue)
         {
             var categoryExists = await _context.Categories
                 .AnyAsync(c => c.Id == dto.CategoryId && c.UserId == userId);
-            
+
             if (!categoryExists)
             {
                 return BadRequest("Invalid category");
@@ -168,7 +168,7 @@ public class TasksController : ControllerBase
         {
             var categoryExists = await _context.Categories
                 .AnyAsync(c => c.Id == dto.CategoryId && c.UserId == userId);
-            
+
             if (!categoryExists)
             {
                 return BadRequest("Invalid category");

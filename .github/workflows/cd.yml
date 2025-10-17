@@ -1,4 +1,4 @@
-name: CD - Continuous Deployment
+name: CD
 
 on:
   workflow_dispatch:
@@ -25,6 +25,7 @@ jobs:
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}
     # Only run if CI was successful or triggered manually
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
@@ -93,7 +94,7 @@ jobs:
         build-args: |
           REACT_APP_API_URL=/api
           REACT_APP_AZURE_CLIENT_ID=${{ secrets.REACT_APP_AZURE_CLIENT_ID }}
-          REACT_APP_AZURE_TENANT_ID=${{ secrets.REACT_APP_AZURE_TENANT_ID }}
+          REACT_APP_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
           REACT_APP_AZURE_REDIRECT_URI=https://placeholder.azurecontainerapps.io
           REACT_APP_BYPASS_AUTH=${{ steps.determine-env.outputs.environment == 'dev' && 'true' || 'false' }}
         cache-from: type=gha

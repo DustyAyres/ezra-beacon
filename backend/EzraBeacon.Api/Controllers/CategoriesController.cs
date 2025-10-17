@@ -24,9 +24,9 @@ public class CategoriesController : ControllerBase
 
     private string GetUserId()
     {
-        return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? 
-               User.FindFirst("oid")?.Value ?? 
-               throw new UnauthorizedAccessException("User ID not found");
+        return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+            User.FindFirst("oid")?.Value ??
+            throw new UnauthorizedAccessException("User ID not found");
     }
 
     [HttpGet]

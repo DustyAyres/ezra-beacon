@@ -84,7 +84,7 @@ jobs:
       if: steps.changed-files.outputs.docker_any_changed == 'true'
       run: |
         echo "Docker files changed, validating..."
-        docker-compose config
+        docker compose config
 
   size-check:
     name: Bundle Size Check

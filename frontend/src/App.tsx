@@ -16,7 +16,7 @@ import { useDevAuth } from './features/auth/hooks/useDevAuth';
 function App() {
   const isAuthenticated = useIsAuthenticated();
   const { inProgress } = useMsal();
-  const { isDevelopment, isDevAuthReady } = useDevAuth();
+  const { isDevAuthenticated } = useDevAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [taskCounts, setTaskCounts] = useState<TaskCounts>({
     myDay: 0,
@@ -25,7 +25,7 @@ function App() {
     all: 0
   });
 
-  const isAuthenticatedOrDev = isAuthenticated || (isDevelopment && isDevAuthReady);
+  const isAuthenticatedOrDev = isAuthenticated || isDevAuthenticated;
 
   useEffect(() => {
     if (isAuthenticatedOrDev) {
@@ -52,13 +52,9 @@ function App() {
     }
   };
 
-  // Show loading only when in production mode or dev auth is not ready
-  if (!isDevelopment && (inProgress === InteractionStatus.Startup || inProgress === InteractionStatus.HandleRedirect)) {
+  // Show loading only when MSAL is in progress
+  if (inProgress === InteractionStatus.Startup || inProgress === InteractionStatus.HandleRedirect) {
     return <div className="loading">Loading...</div>;
-  }
-
-  if (isDevelopment && !isDevAuthReady) {
-    return <div className="loading">Initializing development mode...</div>;
   }
 
   if (!isAuthenticatedOrDev) {

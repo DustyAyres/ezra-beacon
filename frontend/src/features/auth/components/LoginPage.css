@@ -66,8 +66,39 @@
   color: #ff9800;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 16px;
+  margin-top: 16px;
   padding: 8px;
   background-color: rgba(255, 152, 0, 0.1);
   border-radius: 4px;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.login-divider span {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 0 16px;
+  text-transform: uppercase;
+}
+
+.dev-login-button {
+  background-color: #6c757d;
+  margin-bottom: 16px;
+}
+
+.dev-login-button:hover {
+  background-color: #5a6268;
 }

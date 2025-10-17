@@ -8,7 +8,7 @@ services:
         - REACT_APP_AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
         - REACT_APP_AZURE_TENANT_ID=${AZURE_TENANT_ID}
         - REACT_APP_AZURE_REDIRECT_URI=${AZURE_REDIRECT_URI}
-        - REACT_APP_BYPASS_AUTH=${BYPASS_AUTH:-false}
+        - REACT_APP_BYPASS_AUTH=${BYPASS_AUTH:-true}
     ports:
       - "3000:3000"
     depends_on:
@@ -30,7 +30,7 @@ services:
       - AzureAd__ClientId=${AZURE_CLIENT_ID}
       - AzureAd__Scopes=api://${AZURE_CLIENT_ID}/access_as_user
       - ASPNETCORE_URLS=http://+:5000
-      - Development__BypassAuthentication=${BYPASS_AUTH:-false}
+      - Development__BypassAuthentication=${BYPASS_AUTH:-true}
     volumes:
       - ./data:/app/data
     networks:

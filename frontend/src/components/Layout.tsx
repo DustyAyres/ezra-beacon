@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMsal } from '@azure/msal-react';
 import Sidebar from './Sidebar';
-import CategoryManager from './CategoryManager';
-import { Category, TaskCounts } from '../types';
+import CategoryManager from '../features/categories/components/CategoryManager';
+import { Category } from '../features/categories/types';
+import { TaskCounts } from '../types';
 import './Layout.css';
 
 interface LayoutProps {

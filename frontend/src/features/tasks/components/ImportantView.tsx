@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import TaskList from './TaskList';
 import AddTask from './AddTask';
 import ViewControls from './ViewControls';
-import { Task, Category, SortBy, ViewMode } from '../types';
-import api from '../services/api';
+import { Task } from '../types';
+import { SortBy, ViewMode } from '../../../types';
+import { Category } from '../../categories/types';
+import api from '../../../lib/api';
 import './TaskView.css';
 
-interface TasksViewProps {
+interface ImportantViewProps {
   categories: Category[];
   onTaskChange?: () => void;
 }
 
-const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
+const ImportantView: React.FC<ImportantViewProps> = ({ categories, onTaskChange }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>('creationdate');
@@ -27,7 +29,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
   const loadTasks = async () => {
     try {
       setLoading(true);
-      const data = await api.getTasks('tasks', sortBy, selectedCategory || undefined);
+      const data = await api.getTasks('important', sortBy, selectedCategory || undefined);
       setTasks(data);
     } catch (error) {
       console.error('Failed to load tasks:', error);
@@ -40,7 +42,8 @@ const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
     try {
       await api.createTask({
         title,
-        isImportant: false,
+        isImportant: true, // Set as important by default
+        dueDate: undefined,
         categoryId: selectedCategory || undefined,
       });
       await loadTasks();
@@ -70,6 +73,8 @@ const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
     }
   };
 
+  const sortedByCreationDate = sortBy === 'creationdate' ? 'Sorted by creation date' : '';
+
   const groupedTasks = groupByCategory
     ? tasks.reduce((groups, task) => {
         const categoryName = task.category?.name || 'Uncategorized';
@@ -84,6 +89,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
   return (
     <div className="task-view">
       <div className="task-view-header">
+        <div className="task-view-date">{sortedByCreationDate}</div>
         <ViewControls
           viewMode={viewMode}
           sortBy={sortBy}
@@ -97,7 +103,7 @@ const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
         />
       </div>
 
-      <AddTask onAdd={handleTaskCreate} placeholder="Add a task" />
+      <AddTask onAdd={handleTaskCreate} placeholder="Add an important task" />
 
       {loading ? (
         <div className="loading-tasks">Loading tasks...</div>
@@ -134,4 +140,4 @@ const TasksView: React.FC<TasksViewProps> = ({ categories, onTaskChange }) => {
   );
 };
 
-export default TasksView;
+export default ImportantView;

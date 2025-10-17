@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { loginRequest } from '../authConfig';
+import { loginRequest } from '../../../config/authConfig';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {

@@ -108,8 +108,8 @@ resource "azurerm_storage_account" "main" {
   account_replication_type = "LRS"
   
   # Enable Azure Files
-  enable_https_traffic_only = true
-  min_tls_version          = "TLS1_2"
+  https_traffic_only_enabled = true
+  min_tls_version           = "TLS1_2"
   
   tags = local.common_tags
 }
@@ -233,6 +233,11 @@ resource "azurerm_container_app" "backend" {
     external_enabled = false
     target_port      = 5000
     transport        = "http"
+    
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
   }
 
   registry {

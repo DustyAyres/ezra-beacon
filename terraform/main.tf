@@ -62,7 +62,7 @@ resource "azurerm_subnet" "container_apps" {
   name                 = "snet-containerapp-${var.project_name}-${var.environment}-${var.region_code}"
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.1.0/23"]  # Larger subnet for Container Apps
+  address_prefixes     = ["10.0.2.0/23"]  # Larger subnet for Container Apps
   
   delegation {
     name = "containerapp"

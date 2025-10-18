@@ -12,13 +12,14 @@ The infrastructure includes:
   - VNet integrated for secure access
   - Built-in load balancing and auto-scaling
 - **Container Apps**: Separate apps for frontend and backend
-  - Frontend: Public-facing React application
-  - Backend: Internal API service with SQLite database
+  - Frontend: Public-facing React application (can scale to multiple instances)
+  - Backend: Internal API service with SQLite database (single instance only)
 - **Log Analytics Workspace**: For monitoring and logs
 - **Azure Storage Account with File Share**: Persistent storage for SQLite database
   - SQLite database file is stored in Azure Files
   - Mounted as a volume to the backend container
   - Provides data persistence across container restarts
+  - **Important**: Backend is limited to single instance due to SQLite file locking constraints
 
 ## Prerequisites
 

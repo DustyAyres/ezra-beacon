@@ -192,34 +192,12 @@ resource "azurerm_container_app" "backend" {
       }
     }
     
-    min_replicas = var.min_replicas
-    max_replicas = var.max_replicas
+    # SQLite limitation: Must run as single instance to avoid database locking
+    min_replicas = 1
+    max_replicas = 1
     
-    # HTTP scaling rule - scale based on concurrent requests
-    http_scale_rule {
-      name                = "http-scaling"
-      concurrent_requests = var.scale_rule_concurrent_requests
-    }
-    
-    # CPU scaling rule
-    custom_scale_rule {
-      name             = "cpu-scaling"
-      custom_rule_type = "cpu"
-      metadata = {
-        type  = "Utilization"
-        value = tostring(var.scale_rule_cpu_percentage)
-      }
-    }
-    
-    # Memory scaling rule
-    custom_scale_rule {
-      name             = "memory-scaling"
-      custom_rule_type = "memory"
-      metadata = {
-        type  = "Utilization"
-        value = tostring(var.scale_rule_memory_percentage)
-      }
-    }
+    # Scaling rules disabled for backend due to SQLite single-instance requirement
+    # The frontend can still scale independently
     
     # Define the volume for SQLite database
     volume {

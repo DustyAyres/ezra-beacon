@@ -164,7 +164,7 @@ jobs:
         ARM_USE_OIDC: true
     
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+      if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
       working-directory: ./terraform
       run: |
         terraform apply -auto-approve tfplan

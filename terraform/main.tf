@@ -43,7 +43,7 @@ locals {
 
 # Resource Group
 resource "azurerm_resource_group" "main" {
-  name     = "rg-${var.project_name}-${var.environment}-${var.region_code}"
+  name     = "rg-${var.project_name}-${var.environment}-spoke-${var.region_code}"
   location = var.location
   tags     = local.common_tags
 }

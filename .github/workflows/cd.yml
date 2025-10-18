@@ -188,7 +188,7 @@ jobs:
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         ARM_USE_OIDC: true
     
-    - name: Update Frontend Container App with correct API URL
+    - name: Update Frontend Container App with correct URLs
       if: success()
       run: |
         # Extract container app name from Terraform output
@@ -197,8 +197,8 @@ jobs:
         az containerapp update \
           --name $FRONTEND_APP_NAME \
           --resource-group ${{ env.RESOURCE_GROUP }} \
-          --set-env-vars "REACT_APP_API_URL=${{ env.BACKEND_URL }}/api" \
-          --revision-suffix "api-update-$(date +%s)"
+          --set-env-vars "REACT_APP_API_URL=${{ env.BACKEND_URL }}/api" "REACT_APP_AZURE_REDIRECT_URI=${{ env.FRONTEND_URL }}" \
+          --revision-suffix "url-update-$(date +%s)"
     
     - name: Summary
       if: success()

@@ -289,7 +289,7 @@ resource "azurerm_container_app" "frontend" {
       
       env {
         name  = "REACT_APP_AZURE_REDIRECT_URI"
-        value = "https://${azurerm_container_app.frontend.latest_revision_fqdn}"
+        value = "https://placeholder.azurecontainerapps.io"  # This will be updated post-deployment
       }
       
       env {

@@ -12,6 +12,7 @@ using Xunit;
 using EzraBeacon.Api.Controllers;
 using EzraBeacon.Core.Entities;
 using EzraBeacon.Infrastructure.Data;
+using EzraBeacon.Api.DTOs;
 
 namespace EzraBeacon.Tests.Controllers;
 

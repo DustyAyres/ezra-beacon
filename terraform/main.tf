@@ -156,34 +156,34 @@ resource "azurerm_container_app" "backend" {
         name  = "Development__BypassAuthentication"
         value = var.bypass_auth
       }
+    }
+    
+    min_replicas = var.min_replicas
+    max_replicas = var.max_replicas
 
-      min_replicas = var.min_replicas
-      max_replicas = var.max_replicas
+    # HTTP scaling rule - scale based on concurrent requests
+    http_scale_rule {
+      name                = "http-scaling"
+      concurrent_requests = var.scale_rule_concurrent_requests
+    }
 
-      # HTTP scaling rule - scale based on concurrent requests
-      http_scale_rule {
-        name                = "http-scaling"
-        concurrent_requests = var.scale_rule_concurrent_requests
+    # CPU scaling rule
+    custom_scale_rule {
+      name             = "cpu-scaling"
+      custom_rule_type = "cpu"
+      metadata = {
+        type  = "Utilization"
+        value = tostring(var.scale_rule_cpu_percentage)
       }
+    }
 
-      # CPU scaling rule
-      custom_scale_rule {
-        name             = "cpu-scaling"
-        custom_rule_type = "cpu"
-        metadata = {
-          type  = "Utilization"
-          value = tostring(var.scale_rule_cpu_percentage)
-        }
-      }
-
-      # Memory scaling rule
-      custom_scale_rule {
-        name             = "memory-scaling"
-        custom_rule_type = "memory"
-        metadata = {
-          type  = "Utilization"
-          value = tostring(var.scale_rule_memory_percentage)
-        }
+    # Memory scaling rule
+    custom_scale_rule {
+      name             = "memory-scaling"
+      custom_rule_type = "memory"
+      metadata = {
+        type  = "Utilization"
+        value = tostring(var.scale_rule_memory_percentage)
       }
     }
   }

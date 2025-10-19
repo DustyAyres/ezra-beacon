@@ -43,7 +43,7 @@ locals {
 
 # Resource Group
 resource "azurerm_resource_group" "main" {
-  name     = "rg-${var.project_name}-${var.environment}-${var.region_code}"
+  name     = "rg-${var.project_name}-spoke-${var.environment}-${var.region_code}"
   location = var.location
   tags     = local.common_tags
 }
@@ -62,15 +62,7 @@ resource "azurerm_subnet" "container_apps" {
   name                 = "snet-containerapp-${var.project_name}-${var.environment}-${var.region_code}"
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.1.0/23"] # Larger subnet for Container Apps
-
-  delegation {
-    name = "containerapp"
-    service_delegation {
-      name    = "Microsoft.App/environments"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-    }
-  }
+  address_prefixes     = ["10.0.2.0/23"]  # Larger subnet for Container Apps
 }
 
 # Note: Using SQLite with Azure Files storage instead of Azure SQL Database

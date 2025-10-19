@@ -92,11 +92,11 @@ jobs:
         tags: ${{ secrets.ACR_LOGIN_SERVER }}/ezra-beacon-frontend:${{ steps.meta.outputs.version }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          REACT_APP_API_URL=/api
+          REACT_APP_API_URL=${{ vars.REACT_APP_API_URL || '/api' }}
           REACT_APP_AZURE_CLIENT_ID=${{ secrets.REACT_APP_AZURE_CLIENT_ID }}
           REACT_APP_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
-          REACT_APP_AZURE_REDIRECT_URI=https://placeholder.azurecontainerapps.io
-          REACT_APP_BYPASS_AUTH=${{ steps.determine-env.outputs.environment == 'dev' && 'true' || 'false' }}
+          REACT_APP_AZURE_REDIRECT_URI=${{ vars.REACT_APP_AZURE_REDIRECT_URI }}
+          REACT_APP_BYPASS_AUTH=${{ 'false' }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
   

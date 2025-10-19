@@ -9,7 +9,7 @@ container_memory_backend  = "1Gi"
 container_cpu_frontend    = "0.25"
 container_memory_frontend = "0.5Gi"
 min_replicas             = 1
-max_replicas             = 1  # SQLite limitation - single instance only
+max_replicas             = 3
 
 # Autoscaling Configuration
 scale_rule_concurrent_requests = 50   # Lower threshold for dev

@@ -40,11 +40,23 @@ builder.Services.AddCors(options =>
 
 // Add Entity Framework
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=ezra.db";
+
+// Add this after getting the connection string
+if (builder.Environment.IsDevelopment() &&
+    Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    // Running in Docker during development - use a local path
+    connectionString = "Data Source=/tmp/ezra-dev.db";
+}
+
 builder.Services.AddDbContext<EzraBeaconContext>(options =>
     options.UseSqlite(connectionString));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Add this line to register Swagger examples
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 // Configure Swagger/OpenAPI
 builder.Services.AddSwaggerGen(options =>

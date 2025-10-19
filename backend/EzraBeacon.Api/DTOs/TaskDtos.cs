@@ -14,19 +14,19 @@ public class TaskCountsDto
     /// </summary>
     /// <example>5</example>
     public int MyDay { get; set; }
-    
+
     /// <summary>
     /// Number of tasks marked as important
     /// </summary>
     /// <example>3</example>
     public int Important { get; set; }
-    
+
     /// <summary>
     /// Number of tasks with a future due date
     /// </summary>
     /// <example>7</example>
     public int Planned { get; set; }
-    
+
     /// <summary>
     /// Total number of all active tasks
     /// </summary>
@@ -46,31 +46,31 @@ public class CreateTaskDto : IExamplesProvider<CreateTaskDto>
     [Required]
     [MaxLength(255)]
     public string Title { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// The due date for the task
     /// </summary>
     /// <example>2024-12-31</example>
     public DateTime? DueDate { get; set; }
-    
+
     /// <summary>
     /// Whether this task is marked as important
     /// </summary>
     /// <example>true</example>
     public bool IsImportant { get; set; }
-    
+
     /// <summary>
     /// The recurrence pattern for the task
     /// </summary>
     /// <example>0</example>
     public RecurrenceType? RecurrenceType { get; set; }
-    
+
     /// <summary>
     /// Custom recurrence pattern (if RecurrenceType is Custom)
     /// </summary>
     /// <example>Every 2 weeks on Monday and Friday</example>
     public string? CustomRecurrencePattern { get; set; }
-    
+
     /// <summary>
     /// The category ID this task belongs to
     /// </summary>
@@ -101,37 +101,37 @@ public class UpdateTaskDto : IExamplesProvider<UpdateTaskDto>
     /// <example>Complete quarterly report - REVISED</example>
     [MaxLength(255)]
     public string? Title { get; set; }
-    
+
     /// <summary>
     /// The updated due date for the task
     /// </summary>
     /// <example>2024-12-30</example>
     public DateTime? DueDate { get; set; }
-    
+
     /// <summary>
     /// Whether this task is marked as important
     /// </summary>
     /// <example>false</example>
     public bool? IsImportant { get; set; }
-    
+
     /// <summary>
     /// Whether this task is completed
     /// </summary>
     /// <example>true</example>
     public bool? IsCompleted { get; set; }
-    
+
     /// <summary>
     /// The recurrence pattern for the task
     /// </summary>
     /// <example>2</example>
     public RecurrenceType? RecurrenceType { get; set; }
-    
+
     /// <summary>
     /// Custom recurrence pattern (if RecurrenceType is Custom)
     /// </summary>
     /// <example>Every month on the 15th</example>
     public string? CustomRecurrencePattern { get; set; }
-    
+
     /// <summary>
     /// The category ID this task belongs to
     /// </summary>
@@ -182,7 +182,7 @@ public class UpdateStepDto : IExamplesProvider<UpdateStepDto>
     /// <example>Research competitor pricing - COMPLETED</example>
     [MaxLength(255)]
     public string? Title { get; set; }
-    
+
     /// <summary>
     /// Whether this step is completed
     /// </summary>

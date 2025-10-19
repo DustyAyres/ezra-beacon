@@ -46,7 +46,7 @@ public class DevAuthenticationHandlerTests
         // Assert
         Assert.True(result.Succeeded);
         Assert.NotNull(result.Principal);
-        
+
         var claims = result.Principal.Claims;
         Assert.Contains(claims, c => c.Type == ClaimTypes.NameIdentifier && c.Value == "dev-user-123");
         Assert.Contains(claims, c => c.Type == "oid" && c.Value == "dev-user-123");

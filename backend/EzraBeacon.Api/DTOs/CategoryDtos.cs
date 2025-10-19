@@ -15,7 +15,7 @@ public class CreateCategoryDto : IExamplesProvider<CreateCategoryDto>
     [Required]
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// The color associated with this category (hex format)
     /// </summary>
@@ -45,7 +45,7 @@ public class UpdateCategoryDto : IExamplesProvider<UpdateCategoryDto>
     /// <example>Work Projects - Updated</example>
     [MaxLength(100)]
     public string? Name { get; set; }
-    
+
     /// <summary>
     /// The updated color for the category (hex format)
     /// </summary>

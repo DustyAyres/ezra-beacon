@@ -5,3 +5,5 @@ describe('API Service', () => {
     expect(true).toBe(true);
   });
 });
+
+export {};

@@ -99,37 +99,9 @@ resource "azurerm_container_app_environment" "main" {
   tags = local.common_tags
 }
 
-# Storage Account for SQLite database persistence
-resource "azurerm_storage_account" "main" {
-  name                     = "st${var.project_name}${var.environment}${var.region_code}"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  
-  # Enable Azure Files
-  https_traffic_only_enabled = true
-  min_tls_version           = "TLS1_2"
-  
-  tags = local.common_tags
-}
-
-# Storage Share for SQLite database file
-resource "azurerm_storage_share" "sqlite_data" {
-  name                 = "sqlite-data"
-  storage_account_name = azurerm_storage_account.main.name
-  quota                = 10  # 10 GB for SQLite database
-}
-
-# Container App Environment Storage - Links Azure Files to Container Apps
-resource "azurerm_container_app_environment_storage" "sqlite" {
-  name                         = "sqlite-storage"
-  container_app_environment_id = azurerm_container_app_environment.main.id
-  account_name                 = azurerm_storage_account.main.name
-  share_name                   = azurerm_storage_share.sqlite_data.name
-  access_key                   = azurerm_storage_account.main.primary_access_key
-  access_mode                  = "ReadWrite"
-}
+# Note: Storage account and Azure Files removed - using ephemeral storage for now
+# This means data will be lost on container restart, but simplifies deployment
+# For production, consider migrating to Azure SQL Database
 
 # Container App - Backend
 resource "azurerm_container_app" "backend" {
@@ -147,13 +119,7 @@ resource "azurerm_container_app" "backend" {
 
       env {
         name  = "ConnectionStrings__DefaultConnection"
-        value = "Data Source=/app/data/ezra.db"
-      }
-      
-      # Mount the SQLite database volume
-      volume_mounts {
-        name = "sqlite-volume"
-        path = "/app/data"
+        value = "Data Source=/tmp/ezra.db"  # Using local ephemeral storage
       }
       
       env {
@@ -190,6 +156,27 @@ resource "azurerm_container_app" "backend" {
         name  = "Development__BypassAuthentication"
         value = var.bypass_auth
       }
+      
+      # Health probes
+      liveness_probe {
+        path              = "/health"
+        port              = 5000
+        initial_delay_seconds = 10
+        period_seconds        = 30
+        timeout_seconds       = 10
+        failure_threshold     = 3
+        transport             = "HTTP"
+      }
+      
+      readiness_probe {
+        path              = "/health"
+        port              = 5000
+        initial_delay_seconds = 5
+        period_seconds        = 10
+        timeout_seconds       = 5
+        failure_threshold     = 3
+        transport             = "HTTP"
+      }
     }
     
     # SQLite limitation: Must run as single instance to avoid database locking
@@ -199,16 +186,11 @@ resource "azurerm_container_app" "backend" {
     # Scaling rules disabled for backend due to SQLite single-instance requirement
     # The frontend can still scale independently
     
-    # Define the volume for SQLite database
-    volume {
-      name         = "sqlite-volume"
-      storage_type = "AzureFile"
-      storage_name = azurerm_container_app_environment_storage.sqlite.name
-    }
+    # Using ephemeral storage - no volume mount needed
   }
 
   ingress {
-    external_enabled = false
+    external_enabled = true  # Backend is now externally accessible
     target_port      = 5000
     transport        = "http"
     
@@ -333,29 +315,4 @@ resource "azurerm_container_app" "frontend" {
   }
   
   tags = local.common_tags
-}
-
-# Output values
-output "resource_group_name" {
-  value = azurerm_resource_group.main.name
-}
-
-output "frontend_url" {
-  value = "https://${azurerm_container_app.frontend.latest_revision_fqdn}"
-}
-
-output "backend_url" {
-  value = "https://${azurerm_container_app.backend.latest_revision_fqdn}"
-}
-
-output "container_apps_environment_name" {
-  value = azurerm_container_app_environment.main.name
-}
-
-output "storage_account_name" {
-  value = azurerm_storage_account.main.name
-}
-
-output "storage_share_name" {
-  value = azurerm_storage_share.sqlite_data.name
 }

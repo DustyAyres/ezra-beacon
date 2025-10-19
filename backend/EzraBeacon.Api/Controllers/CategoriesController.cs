@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
 using EzraBeacon.Core.Entities;
 using EzraBeacon.Infrastructure.Data;
+using EzraBeacon.Api.DTOs;
 using System.Security.Claims;
 
 namespace EzraBeacon.Api.Controllers;
@@ -152,17 +153,4 @@ public class CategoriesController : ControllerBase
 
         return hex.Substring(1).All(c => "0123456789ABCDEFabcdef".Contains(c));
     }
-}
-
-// DTOs
-public class CreateCategoryDto
-{
-    public string Name { get; set; } = string.Empty;
-    public string ColorHex { get; set; } = "#0078D4";
-}
-
-public class UpdateCategoryDto
-{
-    public string? Name { get; set; }
-    public string? ColorHex { get; set; }
 }

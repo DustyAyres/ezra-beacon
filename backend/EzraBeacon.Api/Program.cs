@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using EzraBeacon.Infrastructure.Data;
 using EzraBeacon.Api.Authentication;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,93 @@ builder.Services.AddDbContext<EzraBeaconContext>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Configure Swagger/OpenAPI
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Ezra Beacon API",
+        Version = "v1",
+        Description = "A personal task management API with support for categories, recurring tasks, and subtasks.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Ezra Beacon Team",
+            Email = "support@ezrabeacon.com"
+        },
+        License = new Microsoft.OpenApi.Models.OpenApiLicense
+        {
+            Name = "MIT License",
+            Url = new Uri("https://opensource.org/licenses/MIT")
+        }
+    });
+
+    // Add security definition
+    if (!bypassAuth)
+    {
+        options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT"
+        });
+
+        options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    }
+    else
+    {
+        options.AddSecurityDefinition("DevAuth", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Description = "Development authentication bypass. Use any bearer token value (e.g., 'dev-token').",
+            Name = "Authorization",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+            Scheme = "bearer"
+        });
+
+        options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "DevAuth"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    }
+
+    // Include XML comments if available
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+
+    // Add example filters for better documentation
+    options.ExampleFilters();
+});
 
 var app = builder.Build();
 
@@ -59,7 +146,17 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Ezra Beacon API v1");
+        options.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root
+        options.DocumentTitle = "Ezra Beacon API Documentation";
+        options.EnableDeepLinking();
+        options.EnableFilter();
+        options.ShowExtensions();
+        options.EnableValidator();
+        options.DisplayRequestDuration();
+    });
 }
 
 app.UseCors("AllowFrontend");

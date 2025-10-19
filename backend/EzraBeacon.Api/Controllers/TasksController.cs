@@ -5,13 +5,18 @@ using Microsoft.Identity.Web.Resource;
 using EzraBeacon.Core;
 using EzraBeacon.Core.Entities;
 using EzraBeacon.Infrastructure.Data;
+using EzraBeacon.Api.DTOs;
 using System.Security.Claims;
 
 namespace EzraBeacon.Api.Controllers;
 
+/// <summary>
+/// API controller for managing tasks
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class TasksController : ControllerBase
 {
     private readonly EzraBeaconContext _context;
@@ -30,7 +35,13 @@ public class TasksController : ControllerBase
             throw new UnauthorizedAccessException("User ID not found");
     }
 
+    /// <summary>
+    /// Get task counts for different views
+    /// </summary>
+    /// <returns>Task counts for My Day, Important, Planned, and All tasks</returns>
+    /// <response code="200">Returns the task counts</response>
     [HttpGet("counts")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<TaskCountsDto>> GetTaskCounts()
     {
         var userId = GetUserId();
@@ -290,45 +301,4 @@ public class TasksController : ControllerBase
 
         return NoContent();
     }
-}
-
-// DTOs
-public class TaskCountsDto
-{
-    public int MyDay { get; set; }
-    public int Important { get; set; }
-    public int Planned { get; set; }
-    public int All { get; set; }
-}
-
-public class CreateTaskDto
-{
-    public string Title { get; set; } = string.Empty;
-    public DateTime? DueDate { get; set; }
-    public bool IsImportant { get; set; }
-    public RecurrenceType? RecurrenceType { get; set; }
-    public string? CustomRecurrencePattern { get; set; }
-    public Guid? CategoryId { get; set; }
-}
-
-public class UpdateTaskDto
-{
-    public string? Title { get; set; }
-    public DateTime? DueDate { get; set; }
-    public bool? IsImportant { get; set; }
-    public bool? IsCompleted { get; set; }
-    public RecurrenceType? RecurrenceType { get; set; }
-    public string? CustomRecurrencePattern { get; set; }
-    public Guid? CategoryId { get; set; }
-}
-
-public class CreateStepDto
-{
-    public string Title { get; set; } = string.Empty;
-}
-
-public class UpdateStepDto
-{
-    public string? Title { get; set; }
-    public bool? IsCompleted { get; set; }
 }

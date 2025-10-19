@@ -157,7 +157,7 @@ resource "azurerm_container_app" "backend" {
         value = var.bypass_auth
       }
     }
-    
+
     min_replicas = var.min_replicas
     max_replicas = var.max_replicas
 
@@ -189,7 +189,7 @@ resource "azurerm_container_app" "backend" {
   }
 
   ingress {
-    external_enabled = true # Backend is now externally accessible
+    external_enabled = true
     target_port      = 5000
     transport        = "http"
 

@@ -25,18 +25,17 @@ jobs:
       run: dotnet build --configuration Release --no-restore
       working-directory: ./backend
     
-    # TODO: Uncomment when tests are ready
-    # - name: Test
-    #   run: dotnet test --no-restore --verbosity normal --logger trx --results-directory "TestResults"
-    #   working-directory: ./backend
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal --logger trx --results-directory "TestResults"
+      working-directory: ./backend
     
-    # - name: Upload test results
-    #   uses: actions/upload-artifact@v4
-    #   if: always()
-    #   with:
-    #     name: test-results
-    #     path: backend/TestResults
-    #     retention-days: 7
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: backend/TestResults
+        retention-days: 7
 
   build-frontend:
     name: Build Frontend
@@ -67,20 +66,19 @@ jobs:
         REACT_APP_AZURE_REDIRECT_URI: ${{ vars.REACT_APP_AZURE_REDIRECT_URI || 'http://localhost:3000' }}
         REACT_APP_BYPASS_AUTH: ${{ vars.REACT_APP_BYPASS_AUTH || 'false' }}
     
-    # TODO: Uncomment when tests are ready
-    # - name: Test
-    #   run: npm test -- --coverage --watchAll=false
-    #   working-directory: ./frontend
-    #   env:
-    #     CI: true
+    - name: Test
+      run: npm test -- --coverage --watchAll=false
+      working-directory: ./frontend
+      env:
+        CI: true
     
-    # - name: Upload coverage reports
-    #   uses: actions/upload-artifact@v4
-    #   if: always()
-    #   with:
-    #     name: coverage-report
-    #     path: frontend/coverage
-    #     retention-days: 7
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: frontend/coverage
+        retention-days: 7
 
   docker-build:
     name: Build Docker Images

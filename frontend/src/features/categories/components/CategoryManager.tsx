@@ -86,7 +86,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   };
 
   return (
-    <div className="category-manager-overlay" onClick={onClose}>
+    <div className="category-manager-overlay" data-testid="modal-overlay" onClick={onClose}>
       <div className="category-manager" onClick={(e) => e.stopPropagation()}>
         <div className="category-manager-header">
           <h2>Manage Categories</h2>

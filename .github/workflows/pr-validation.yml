@@ -41,11 +41,10 @@ jobs:
         dotnet build --configuration Release --no-restore
       working-directory: ./backend
     
-    # TODO: Uncomment when backend tests are ready
-    # - name: Run Backend Tests
-    #   if: steps.changed-files.outputs.backend_any_changed == 'true'
-    #   run: dotnet test --no-restore --verbosity normal
-    #   working-directory: ./backend
+    - name: Run Backend Tests
+      if: steps.changed-files.outputs.backend_any_changed == 'true'
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./backend
     
     - name: Setup Node.js
       if: steps.changed-files.outputs.frontend_any_changed == 'true'
@@ -72,13 +71,12 @@ jobs:
         REACT_APP_AZURE_REDIRECT_URI: 'http://localhost:3000'
         REACT_APP_BYPASS_AUTH: 'true'
     
-    # TODO: Uncomment when frontend tests are ready
-    # - name: Run Frontend Tests
-    #   if: steps.changed-files.outputs.frontend_any_changed == 'true'
-    #   run: npm test -- --coverage --watchAll=false
-    #   working-directory: ./frontend
-    #   env:
-    #     CI: true
+    - name: Run Frontend Tests
+      if: steps.changed-files.outputs.frontend_any_changed == 'true'
+      run: npm test -- --coverage --watchAll=false
+      working-directory: ./frontend
+      env:
+        CI: true
     
     - name: Validate Docker Compose
       if: steps.changed-files.outputs.docker_any_changed == 'true'

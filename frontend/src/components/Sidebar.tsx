@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories, 
         </div>
       </aside>
       {isOpen && window.innerWidth <= APP_BREAKPOINTS.MOBILE && (
-        <div className="sidebar-overlay" onClick={onClose} />
+        <div className="sidebar-overlay" data-testid="sidebar-overlay" onClick={onClose} />
       )}
     </>
   );

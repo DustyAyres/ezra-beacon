@@ -1,6 +1,6 @@
 terraform {
   required_version = ">= 1.0"
-  
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -11,7 +11,7 @@ terraform {
       version = "~> 1.5"
     }
   }
-  
+
   backend "azurerm" {
     # Backend configuration will be provided during init
     # terraform init -backend-config="storage_account_name=<storage_account>" \
@@ -81,47 +81,19 @@ resource "azurerm_log_analytics_workspace" "main" {
 
 # Container Apps Environment
 resource "azurerm_container_app_environment" "main" {
-  name                       = "cae-${var.project_name}-${var.environment}-${var.region_code}"
-  location                   = azurerm_resource_group.main.location
-  resource_group_name        = azurerm_resource_group.main.name
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
-  infrastructure_subnet_id   = azurerm_subnet.container_apps.id
+  name                           = "cae-${var.project_name}-${var.environment}-${var.region_code}"
+  location                       = azurerm_resource_group.main.location
+  resource_group_name            = azurerm_resource_group.main.name
+  log_analytics_workspace_id     = azurerm_log_analytics_workspace.main.id
+  infrastructure_subnet_id       = azurerm_subnet.container_apps.id
   internal_load_balancer_enabled = false
-  
+
   tags = local.common_tags
 }
 
-# Storage Account for SQLite database persistence
-resource "azurerm_storage_account" "main" {
-  name                     = "st${var.project_name}${var.environment}${var.region_code}"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  
-  # Enable Azure Files
-  https_traffic_only_enabled = true
-  min_tls_version           = "TLS1_2"
-  
-  tags = local.common_tags
-}
-
-# Storage Share for SQLite database file
-resource "azurerm_storage_share" "sqlite_data" {
-  name                 = "sqlite-data"
-  storage_account_name = azurerm_storage_account.main.name
-  quota                = 10  # 10 GB for SQLite database
-}
-
-# Container App Environment Storage - Links Azure Files to Container Apps
-resource "azurerm_container_app_environment_storage" "sqlite" {
-  name                         = "sqlite-storage"
-  container_app_environment_id = azurerm_container_app_environment.main.id
-  account_name                 = azurerm_storage_account.main.name
-  share_name                   = azurerm_storage_share.sqlite_data.name
-  access_key                   = azurerm_storage_account.main.primary_access_key
-  access_mode                  = "ReadWrite"
-}
+# Note: Storage account and Azure Files removed - using ephemeral storage for now
+# This means data will be lost on container restart, but simplifies deployment
+# For production, consider migrating to Azure SQL Database
 
 # Container App - Backend
 resource "azurerm_container_app" "backend" {
@@ -139,60 +111,54 @@ resource "azurerm_container_app" "backend" {
 
       env {
         name  = "ConnectionStrings__DefaultConnection"
-        value = "Data Source=/app/data/ezra.db"
+        value = "Data Source=/tmp/ezra.db" # Using local ephemeral storage
       }
-      
-      # Mount the SQLite database volume
-      volume_mounts {
-        name = "sqlite-volume"
-        path = "/app/data"
-      }
-      
+
       env {
         name  = "AzureAd__Instance"
         value = "https://login.microsoftonline.com/"
       }
-      
+
       env {
         name  = "AzureAd__Domain"
         value = var.azure_ad_domain
       }
-      
+
       env {
         name  = "AzureAd__TenantId"
         value = var.azure_ad_tenant_id
       }
-      
+
       env {
         name  = "AzureAd__ClientId"
         value = var.azure_ad_client_id
       }
-      
+
       env {
         name  = "AzureAd__Scopes"
         value = "api://${var.azure_ad_client_id}/access_as_user"
       }
-      
+
       env {
         name  = "ASPNETCORE_URLS"
         value = "http://+:5000"
       }
-      
+
       env {
         name  = "Development__BypassAuthentication"
         value = var.bypass_auth
       }
     }
-    
+
     min_replicas = var.min_replicas
     max_replicas = var.max_replicas
-    
+
     # HTTP scaling rule - scale based on concurrent requests
     http_scale_rule {
       name                = "http-scaling"
       concurrent_requests = var.scale_rule_concurrent_requests
     }
-    
+
     # CPU scaling rule
     custom_scale_rule {
       name             = "cpu-scaling"
@@ -202,7 +168,7 @@ resource "azurerm_container_app" "backend" {
         value = tostring(var.scale_rule_cpu_percentage)
       }
     }
-    
+
     # Memory scaling rule
     custom_scale_rule {
       name             = "memory-scaling"
@@ -212,20 +178,13 @@ resource "azurerm_container_app" "backend" {
         value = tostring(var.scale_rule_memory_percentage)
       }
     }
-    
-    # Define the volume for SQLite database
-    volume {
-      name         = "sqlite-volume"
-      storage_type = "AzureFile"
-      storage_name = azurerm_container_app_environment_storage.sqlite.name
-    }
   }
 
   ingress {
-    external_enabled = false
+    external_enabled = true
     target_port      = 5000
     transport        = "http"
-    
+
     traffic_weight {
       percentage      = 100
       latest_revision = true
@@ -242,11 +201,11 @@ resource "azurerm_container_app" "backend" {
     name  = "acr-password"
     value = var.acr_password
   }
-  
+
   identity {
     type = "SystemAssigned"
   }
-  
+
   tags = local.common_tags
 }
 
@@ -268,37 +227,37 @@ resource "azurerm_container_app" "frontend" {
         name  = "REACT_APP_API_URL"
         value = "https://${azurerm_container_app.backend.latest_revision_fqdn}/api"
       }
-      
+
       env {
         name  = "REACT_APP_AZURE_CLIENT_ID"
         value = var.azure_ad_client_id
       }
-      
+
       env {
         name  = "REACT_APP_AZURE_TENANT_ID"
         value = var.azure_ad_tenant_id
       }
-      
+
       env {
         name  = "REACT_APP_AZURE_REDIRECT_URI"
-        value = "https://placeholder.azurecontainerapps.io"  # This will be updated post-deployment
+        value = "https://placeholder.azurecontainerapps.io" # This will be updated post-deployment
       }
-      
+
       env {
         name  = "REACT_APP_BYPASS_AUTH"
         value = var.bypass_auth
       }
     }
-    
+
     min_replicas = var.min_replicas
     max_replicas = var.max_replicas
-    
+
     # HTTP scaling rule - scale based on concurrent requests
     http_scale_rule {
       name                = "http-scaling"
       concurrent_requests = var.scale_rule_concurrent_requests
     }
-    
+
     # CPU scaling rule
     custom_scale_rule {
       name             = "cpu-scaling"
@@ -308,7 +267,7 @@ resource "azurerm_container_app" "frontend" {
         value = tostring(var.scale_rule_cpu_percentage)
       }
     }
-    
+
     # Memory scaling rule
     custom_scale_rule {
       name             = "memory-scaling"
@@ -324,7 +283,7 @@ resource "azurerm_container_app" "frontend" {
     external_enabled = true
     target_port      = 3000
     transport        = "http"
-    
+
     traffic_weight {
       percentage      = 100
       latest_revision = true
@@ -341,35 +300,10 @@ resource "azurerm_container_app" "frontend" {
     name  = "acr-password"
     value = var.acr_password
   }
-  
+
   identity {
     type = "SystemAssigned"
   }
-  
+
   tags = local.common_tags
-}
-
-# Output values
-output "resource_group_name" {
-  value = azurerm_resource_group.main.name
-}
-
-output "frontend_url" {
-  value = "https://${azurerm_container_app.frontend.latest_revision_fqdn}"
-}
-
-output "backend_url" {
-  value = "https://${azurerm_container_app.backend.latest_revision_fqdn}"
-}
-
-output "container_apps_environment_name" {
-  value = azurerm_container_app_environment.main.name
-}
-
-output "storage_account_name" {
-  value = azurerm_storage_account.main.name
-}
-
-output "storage_share_name" {
-  value = azurerm_storage_share.sqlite_data.name
 }

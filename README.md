@@ -4,6 +4,27 @@
 [![CD Pipeline](https://github.com/DustyAyres/ezra-beacon/actions/workflows/cd.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/cd.yml)
 [![PR Validation](https://github.com/DustyAyres/ezra-beacon/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/pr-validation.yml)
 
+## Table of Contents
+
+- [GitHub Configuration](#github-configuration)
+  - [Repository Variables](#repository-variables)
+  - [Repository Secrets](#repository-secrets)
+- [Technology Stack](#technology-stack)
+- [Prerequisites](#prerequisites)
+- [Azure Setup Guide](#azure-setup-guide)
+  - [1. Azure AD App Registration (MSAL Authentication)](#1-azure-ad-app-registration-msal-authentication)
+  - [2. Service Principal for Terraform/GitHub Actions](#2-service-principal-for-terraformgithub-actions)
+  - [3. Azure Hosting Prerequisites](#3-azure-hosting-prerequisites)
+  - [4. Deployed Architecture](#4-deployed-architecture)
+- [Local Development](#local-development)
+  - [Method 1: Docker Development (Simplest)](#method-1-docker-development-simplest)
+  - [Method 2: Backend Development](#method-2-backend-development)
+  - [Method 3: Frontend Development](#method-3-frontend-development)
+  - [Method 4: Full Azure AD Authentication (Production-like)](#method-4-full-azure-ad-authentication-production-like)
+- [Running Tests](#running-tests)
+- [Project Structure](#project-structure)
+- [License](#license)
+
 ## GitHub Configuration
 
 ### Repository Variables
@@ -72,16 +93,16 @@ Configure in: Settings > Secrets and variables > Actions > Secrets
 Configure Azure AD for user authentication:
 
 **Steps:**
-![App Registration MSAL](references/app-registration-msal.png)
 1. Navigate to Azure Portal → Azure Active Directory → App registrations
+![App Registration MSAL](references/app-registration-msal.png)
 2. Create new registration with name like "Ezra Beacon"
-![App Registration MSAL 2](references/app-registration-msal-2.png)
 3. Configure redirect URIs for your environments:
    - Local: `http://localhost:3000`
    - Production: `https://your-frontend-url.azurecontainerapps.io`
+![App Registration MSAL 2](references/app-registration-msal-2.png)
+4. Expose an API scope: `api://<client-id>/access_as_user`
 ![App Registration MSAL 3](references/app-registration-msal-3.png)
 ![App Registration MSAL 4](references/app-registration-msal-4.png)
-4. Expose an API scope: `api://<client-id>/access_as_user`
 5. Configure authentication settings for SPA
 
 ### 2. Service Principal for Terraform/GitHub Actions
@@ -90,14 +111,14 @@ Set up OIDC authentication for GitHub Actions:
 
 
 **Steps:**
-![Terraform Service Principal](references/app-registration-terraform-sp.png)
 1. Create a new App Registration for Terraform/GitHub Actions
-![Terraform Service Principal 2](references/app-registration-terraform-sp-2.png)
+![Terraform Service Principal](references/app-registration-terraform-sp.png)
 2. Add Federated Credentials:
    - Organization: `YourGitHubOrg`
    - Repository: `ezra-beacon`
    - Entity type: `Environment`
    - Environment: `dev` (repeat for each environment)
+![Terraform Service Principal 2](references/app-registration-terraform-sp-2.png)
 3. Grant RBAC permissions:
    - **Option 1 (Recommended)**: Contributor role at Resource Group level
    - **Option 2**: Contributor role at Subscription level

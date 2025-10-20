@@ -1,38 +1,74 @@
 # Ezra Beacon - Task Management PWA
 
-[![CI/CD Pipeline](https://github.com/DustyAyres/ezra-beacon/actions/workflows/ci.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/ci.yml)
+[![CI Pipeline](https://github.com/DustyAyres/ezra-beacon/actions/workflows/ci.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/ci.yml)
+[![CD Pipeline](https://github.com/DustyAyres/ezra-beacon/actions/workflows/cd.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/cd.yml)
 [![PR Validation](https://github.com/DustyAyres/ezra-beacon/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/DustyAyres/ezra-beacon/actions/workflows/pr-validation.yml)
 
-Ezra Beacon is a Progressive Web App (PWA) for task management, similar to Microsoft To-Do, built with React and .NET Core.
+## GitHub Configuration
 
-## Features
+### Repository Variables
+Configure in: Settings > Secrets and variables > Actions > Variables
 
-- **Task Management**: Create, update, delete, and organize tasks
-- **Multiple Views**: My Day, Important, Planned, and All Tasks views
-- **Categories**: Custom categories with color coding
-- **Task Steps**: Add up to 100 sub-steps to any task
-- **Recurrence**: Daily, Weekdays, Weekly, Monthly, Yearly, or Custom patterns
-- **Sorting & Grouping**: Sort by importance, due date, alphabetically, or creation date
-- **Responsive Design**: Seamless experience on both mobile and desktop
-- **Progressive Web App**: Install as a native app on supported devices
-- **Secure Authentication**: Microsoft Entra ID (Azure AD) integration
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `REACT_APP_API_URL` | Backend API URL | `/api` (for relative URL) |
+| `REACT_APP_AZURE_REDIRECT_URI` | Frontend URL for Azure AD | `https://ca-frontend-ezrabeacon-dev-ue2.azurecontainerapps.io` |
+| `REACT_APP_BYPASS_AUTH` | Enable dev auth bypass | `false` for production, `true` for dev |
+| `REACT_APP_AZURE_CLIENT_ID` | Azure AD App Client ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `REACT_APP_AZURE_TENANT_ID` | Azure AD Tenant ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+
+### Repository Secrets
+Configure in: Settings > Secrets and variables > Actions > Secrets
+
+| Secret | Description | Example |
+|--------|-------------|---------|
+| `AZURE_CLIENT_ID` | Service Principal Client ID for GitHub Actions | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_TENANT_ID` | Azure AD Tenant ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_SUBSCRIPTION_ID` | Azure Subscription ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
+| `AZURE_AD_DOMAIN` | Azure AD Domain | `yourdomain.onmicrosoft.com` |
+| `ACR_NAME` | Azure Container Registry name | `acrezrabeacondev` |
+| `ACR_LOGIN_SERVER` | ACR login server URL | `acrezrabeacondev.azurecr.io` |
+| `ACR_USERNAME` | ACR username | `acrezrabeacondev` |
+| `ACR_PASSWORD` | ACR password | `<from Azure Portal>` |
+| `TF_STATE_STORAGE_ACCOUNT` | Terraform state storage account | `saezrabeacontfstatedev` |
+| `TF_STATE_CONTAINER` | Terraform state container name | `tfstate` |
+| `TF_STATE_RESOURCE_GROUP` | Terraform state resource group | `rg-ezrabeacon-tfstate-dev` |
 
 ## Technology Stack
 
-- **Frontend**: React, TypeScript, PWA
-- **Backend**: .NET Core 8.0 Web API
-- **Database**: SQLite
-- **Authentication**: Microsoft Entra ID (Azure AD)
-- **Containerization**: Docker & Docker Compose
+- **Frontend**: React 18, TypeScript
+- **Backend**: .NET 8.0 Web API, Entity Framework Core
+- **Database**: SQLite (local/dev), ephemeral storage in Azure Container Apps
+- **Authentication**: Microsoft Entra ID (Azure AD) with MSAL
+- **Containerization**: Docker, Docker Compose
+- **Infrastructure**: Azure Container Apps, Azure Container Registry, Terraform
+- **CI/CD**: GitHub Actions
+- **Testing**: Jest (Frontend), xUnit (.NET)
 
 ## Prerequisites
 
+### Minimum Requirements (Docker Development)
 - Docker Desktop
-- Azure AD App Registration
-- Node.js 20+ (for local development)
-- .NET SDK 8.0 (for local development)
+- Git
 
-## Setup
+### Full Development Requirements
+- Docker Desktop
+- Node.js 20+
+- .NET SDK 8.0
+- Visual Studio 2022 or VS Code
+- Azure CLI (for deployment)
+- Terraform (for infrastructure)
+
+### Azure Requirements ()
+- Azure Subscription
+- Azure AD App Registration
+- Service Principal for GitHub Actions
+
+## Local Development
+
+### Method 1: Docker Development (Simplest)
+
+This is the easiest way to get started. No Azure AD setup required.
 
 1. **Clone the repository**
    ```bash
@@ -40,114 +76,189 @@ Ezra Beacon is a Progressive Web App (PWA) for task management, similar to Micro
    cd ezra-beacon
    ```
 
-2. **Configure Azure AD**
-   - Create an App Registration in Azure Portal
-   - Note the Client ID and Tenant ID
-   - Configure redirect URI: `http://localhost:3000`
-   - Expose an API scope: `access_as_user`
-
-3. **Create environment file**
+2. **Create environment file**
    ```bash
    cp env.example .env
    ```
-   Edit `.env` with your Azure AD configuration:
+   
+   The default `.env` file has `BYPASS_AUTH=true`, which bypasses authentication.
+
+3. **Run with Docker Compose**
+   ```bash
+   docker-compose up --build
    ```
+
+4. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+   - Swagger UI: http://localhost:5000/swagger (dev mode only)
+
+That's it! You'll see a "DEV MODE" badge in the UI indicating authentication is bypassed.
+
+### Method 2: Backend Development
+
+For backend development with full debugging capabilities:
+
+1. **Start the frontend in Docker**
+   ```bash
+   docker-compose up -d frontend
+   ```
+
+2. **Open the backend solution in Visual Studio**
+   ```bash
+   cd backend
+   start EzraBeacon.sln
+   ```
+
+3. **Set startup project**
+   - Right-click `EzraBeacon.Api` → Set as Startup Project
+
+4. **Configure environment variables**
+   - Right-click `EzraBeacon.Api` → Properties → Debug
+   - Add environment variables:
+     ```
+     Development__BypassAuthentication=true
+     FRONTEND_URL=http://localhost:3000
+     ```
+
+5. **Run the project** (F5)
+   - Backend will run on http://localhost:5000
+   - Frontend (from Docker) on http://localhost:3000
+
+### Method 3: Frontend Development
+
+For frontend development with hot reload:
+
+1. **Start the backend in Docker**
+   ```bash
+   docker-compose up -d backend
+   ```
+
+2. **Install frontend dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+3. **Create frontend environment file**
+   ```bash
+   cp env.example .env
+   ```
+   
+   Ensure it contains:
+   ```
+   REACT_APP_API_URL=http://localhost:5000/api
+   REACT_APP_BYPASS_AUTH=true
+   ```
+
+4. **Start the frontend**
+   ```bash
+   npm start
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:3000 (with hot reload)
+   - Backend API: http://localhost:5000
+
+### Method 4: Full Azure AD Authentication (Production-like)
+
+For testing with real Azure AD authentication:
+
+1. **Configure Azure AD**
+   - Create an App Registration in Azure Portal
+   - Configure redirect URI: `http://localhost:3000`
+   - Expose an API scope: `api://<client-id>/access_as_user`
+   - Note the Client ID, Tenant ID, and Domain
+
+2. **Update environment file**
+   ```bash
+   BYPASS_AUTH=false
    AZURE_CLIENT_ID=your-client-id
    AZURE_TENANT_ID=your-tenant-id
    AZURE_DOMAIN=your-domain.onmicrosoft.com
    AZURE_REDIRECT_URI=http://localhost:3000
    ```
 
-4. **Run with Docker Compose**
+3. **Run with Docker Compose**
    ```bash
    docker-compose up --build
    ```
 
-5. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3000/api (proxied through frontend)
+## Running Tests
 
-## Development
-
-### Quick Start (No Azure AD Required)
-
-For local development without Azure AD setup:
-
-1. **Copy the development environment file**
-   ```bash
-   copy env.development.example .env
-   ```
-
-2. **Run with Docker Compose**
-   ```bash
-   docker-compose up --build
-   ```
-
-This will run the application in development mode with authentication bypassed. You'll see a "DEV MODE" badge in the UI.
-
-### Development with Azure AD
-
-To develop with real Azure AD authentication:
-
-1. Set up Azure AD as described above
-2. Set `BYPASS_AUTH=false` in your `.env` file
-3. Run the application normally
-
-### Backend Development
-```bash
-cd backend
-dotnet restore
-dotnet run --project EzraBeacon.Api
-```
-
-### Frontend Development
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### Environment Variables
-
-- `BYPASS_AUTH=true` - Bypasses Azure AD authentication (development only)
-- `BYPASS_AUTH=false` - Uses real Azure AD authentication (default)
-
-### Running Tests
+### Backend Tests
 ```bash
 cd backend
 dotnet test
+```
+
+### Frontend Tests
+```bash
+cd frontend
+npm test
+```
+
+### Frontend Tests with Coverage
+```bash
+cd frontend
+npm test -- --coverage --watchAll=false
 ```
 
 ## Project Structure
 
 ```
 ezra-beacon/
-├── frontend/               # React PWA application
-│   ├── public/            # Static assets
-│   ├── src/               # Source code
-│   │   ├── components/    # React components
-│   │   ├── services/      # API services
-│   │   ├── types/         # TypeScript types
-│   │   └── styles/        # CSS files
-│   └── Dockerfile
-├── backend/               # .NET Core Web API
-│   ├── EzraBeacon.Api/    # API project
-│   ├── EzraBeacon.Core/   # Domain models
-│   ├── EzraBeacon.Infrastructure/  # Data access
-│   ├── EzraBeacon.Tests/  # Unit tests
-│   └── Dockerfile
-├── assets/                # Shared assets (fonts, icons, etc.)
-├── references/            # UI reference images
-└── docker-compose.yml     # Docker orchestration
+├── .github/                    # GitHub Actions workflows
+│   └── workflows/
+│       ├── ci.yml             # Continuous Integration pipeline
+│       ├── cd.yml             # Continuous Deployment pipeline
+│       └── pr-validation.yml  # Pull Request validation
+├── backend/                    # .NET Core Web API
+│   ├── EzraBeacon.Api/        # Web API project
+│   │   ├── Controllers/       # API endpoints
+│   │   ├── DTOs/             # Data transfer objects
+│   │   ├── Authentication/   # Auth handlers
+│   │   └── Program.cs        # Application entry point
+│   ├── EzraBeacon.Core/       # Domain models and interfaces
+│   │   └── Entities/         # Task, Category, User models
+│   ├── EzraBeacon.Infrastructure/  # Data access layer
+│   │   ├── Data/             # DbContext and configurations
+│   │   └── Migrations/       # EF Core migrations
+│   ├── EzraBeacon.Tests/      # Unit and integration tests
+│   └── backend.Dockerfile     # Backend container definition
+├── frontend/                   # React PWA application
+│   ├── public/                # Static assets
+│   │   └── assets/           # Fonts, icons, manifests
+│   ├── src/
+│   │   ├── components/       # Shared UI components
+│   │   ├── features/         # Feature-based modules
+│   │   │   ├── auth/        # Authentication
+│   │   │   ├── categories/  # Category management
+│   │   │   └── tasks/       # Task management
+│   │   ├── lib/             # API client and utilities
+│   │   ├── types/           # TypeScript type definitions
+│   │   └── App.tsx          # Root component
+│   └── frontend.Dockerfile    # Frontend container definition
+├── scripts/                    # Deployment and utility scripts
+│   ├── update-backend-cors.ps1   # PowerShell CORS update
+│   └── update-backend-cors.sh    # Bash CORS update
+├── terraform/                  # Infrastructure as Code
+│   ├── main.tf                # Azure resources definition
+│   ├── variables.tf           # Terraform variables
+│   ├── outputs.tf             # Output values
+│   └── environments/          # Environment-specific configs
+│       └── dev.tfvars        # Development environment
+├── docker-compose.yml          # Local development orchestration
+├── env.example                 # Example environment variables
+└── README.md                   # This file
 ```
-
-## Security
-
-- Frontend authentication via Microsoft Entra ID
-- Backend API secured with JWT tokens
-- API only accessible through Docker network
-- CORS configured for frontend origin only
 
 ## License
 
-This project is proprietary software.
+The MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

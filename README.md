@@ -34,6 +34,8 @@ Configure in: Settings > Secrets and variables > Actions > Variables
 |----------|-------------|---------|
 | `REACT_APP_API_URL` | Backend API URL | `https://ca-backend-ezrabeacon-dev-ue2.whitemushroom-439b160a.eastus2.azurecontainerapps.io/api` |
 | `REACT_APP_AZURE_REDIRECT_URI` | Frontend URL for Azure AD | `https://ca-frontend-ezrabeacon-dev-ue2.azurecontainerapps.io` |
+| `REACT_APP_BYPASS_AUTH` | Enable dev auth bypass | `false` for production, `true` for dev |
+| `ENABLE_MULTITENANCY` | Enable multi-tenant authentication | `true` or `false` |
 
 ### Repository Secrets
 Configure in: Settings > Secrets and variables > Actions > Secrets
@@ -215,7 +217,6 @@ This is the easiest way to get started. No Azure AD setup required.
 4. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000
-   - Swagger UI: http://localhost:5000/swagger (dev mode only)
 
 That's it! You'll see a "DEV MODE" badge in the UI indicating authentication is bypassed.
 
@@ -237,17 +238,14 @@ For backend development with full debugging capabilities:
 3. **Set startup project**
    - Right-click `EzraBeacon.Api` → Set as Startup Project
 
-4. **Configure environment variables**
-   - Right-click `EzraBeacon.Api` → Properties → Debug
-   - Add environment variables:
-     ```
-     Development__BypassAuthentication=true
-     FRONTEND_URL=http://localhost:3000
-     ```
-
-5. **Run the project** (F5)
-   - Backend will run on http://localhost:5000
+4. **Run the project** (F5)
+   - Backend is configured to run in Docker, and I believe it will use an ephemeral 
+   - Swagger UI: https://localhost:<VS-CONFIGURED-PORT> (available at root URL)
    - Frontend (from Docker) on http://localhost:3000
+
+![Azure Hosting](references/swagger-ui.png)
+   
+   **Note**: Swagger UI is only available when debugging in Visual Studio.
 
 ### Method 3: Frontend Development
 

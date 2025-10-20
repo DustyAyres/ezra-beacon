@@ -225,11 +225,6 @@ resource "azurerm_container_app" "frontend" {
       memory = var.container_memory_frontend
 
       env {
-        name  = "REACT_APP_API_URL"
-        value = "https://${azurerm_container_app.backend.latest_revision_fqdn}/api"
-      }
-
-      env {
         name  = "REACT_APP_AZURE_CLIENT_ID"
         value = var.azure_ad_client_id
       }
@@ -237,11 +232,6 @@ resource "azurerm_container_app" "frontend" {
       env {
         name  = "REACT_APP_AZURE_TENANT_ID"
         value = var.azure_ad_tenant_id
-      }
-
-      env {
-        name  = "REACT_APP_AZURE_REDIRECT_URI"
-        value = "https://placeholder.azurecontainerapps.io" # This will be updated post-deployment
       }
 
       env {

@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
         <h1 className="login-title">Welcome to Ezra Beacon</h1>
         <p className="login-subtitle">Your personal task management companion</p>
         
-        <button className="login-button" onClick={handleMicrosoftLogin}>
+        <button className="tertiary w-button" onClick={handleMicrosoftLogin}>
           Sign in with Microsoft
         </button>
         
@@ -36,7 +36,7 @@ const LoginPage: React.FC = () => {
             <div className="login-divider">
               <span>OR</span>
             </div>
-            <button className="login-button dev-login-button" onClick={handleDevLogin}>
+            <button className="secondary-button w-button" onClick={handleDevLogin}>
               Continue as Developer
             </button>
             <p className="login-dev-warning">⚠️ Development Mode - For testing only</p>

@@ -175,7 +175,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
                           className="secondary-button w-button"
                           onClick={() => setEditingCategory(null)}
                         >
-                          Cancel
+                          <i className="fas fa-times"></i> Cancel
                         </button>
                       </div>
                     ) : (

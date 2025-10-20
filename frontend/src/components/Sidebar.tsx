@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onManageCategories, 
         </nav>
         
         <div className="sidebar-footer">
-          <button onClick={() => {
+          <button className="tertiary w-button" onClick={() => {
             onManageCategories();
                   if (window.innerWidth <= APP_BREAKPOINTS.MOBILE) {
                     onClose();

@@ -233,14 +233,14 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                   onKeyPress={(e) => e.key === 'Enter' && handleAddStep()}
                   maxLength={APP_LIMITS.MAX_STEP_TITLE_LENGTH}
                 />
-                <button onClick={handleAddStep}>Add</button>
+                <button className="tertiary w-button" onClick={handleAddStep}>Add</button>
               </div>
             )}
           </div>
         </div>
 
         <div className="task-details-footer">
-          <button className="btn-delete" onClick={async () => {
+          <button className="secondary-button w-button" onClick={async () => {
             if (window.confirm('Are you sure you want to delete this task?')) {
               setIsSaving(true);
               try {
@@ -259,10 +259,10 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             {isSaving ? 'Deleting...' : 'Delete Task'}
           </button>
           <div className="footer-actions">
-            <button className="btn-cancel" onClick={onClose} disabled={isSaving}>
+            <button className="secondary-button w-button" onClick={onClose} disabled={isSaving}>
               Cancel
             </button>
-            <button className="btn-save" onClick={handleSave} disabled={isSaving}>
+            <button className="tertiary w-button" onClick={handleSave} disabled={isSaving}>
               {isSaving ? 'Saving...' : 'Save'}
             </button>
           </div>

@@ -240,7 +240,7 @@ For backend development with full debugging capabilities:
 
 4. **Run the project** (F5)
    - Backend is configured to run in Docker, and I believe it will use an ephemeral Port
-   - Swagger UI: https://localhost:<VS-CONFIGURED-PORT>/Index.html (available at root URL)
+   - Swagger UI: https://localhost: **VS-CONFIGURED-PORT** /Index.html (available at root URL)
    - Frontend (from Docker Compose) on http://localhost:3000
 
 ![Azure Hosting](references/swagger-ui.png)

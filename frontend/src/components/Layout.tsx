@@ -81,7 +81,7 @@ const Layout: React.FC<LayoutProps> = ({ children, categories, onCategoriesChang
               <span className="dev-mode-badge">DEV MODE</span>
             )}
             <span className="user-name">{accounts[0]?.name || 'User'}</span>
-            <button className="logout-button" onClick={handleLogout}>
+            <button className="secondary-button w-button" onClick={handleLogout}>
               Sign out
             </button>
           </div>

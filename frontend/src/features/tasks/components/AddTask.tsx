@@ -48,14 +48,14 @@ const AddTask: React.FC<AddTaskProps> = ({ onAdd, placeholder = "Add a task" }) 
           />
           <div className="add-task-actions">
             <button
-              className="add-task-submit"
+              className="tertiary w-button"
               onClick={handleSubmit}
               disabled={!title.trim()}
             >
               Add
             </button>
             <button
-              className="add-task-cancel"
+              className="secondary-button w-button"
               onClick={() => {
                 setTitle('');
                 setIsExpanded(false);

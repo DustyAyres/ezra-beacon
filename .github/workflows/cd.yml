@@ -94,7 +94,7 @@ jobs:
         build-args: |
           REACT_APP_API_URL=${{ vars.REACT_APP_API_URL || '/api' }}
           REACT_APP_AZURE_CLIENT_ID=${{ secrets.REACT_APP_AZURE_CLIENT_ID }}
-          REACT_APP_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+          REACT_APP_AZURE_TENANT_ID=${{ 'common' }}
           REACT_APP_AZURE_REDIRECT_URI=${{ vars.REACT_APP_AZURE_REDIRECT_URI }}
           REACT_APP_BYPASS_AUTH=${{ 'false' }}
         cache-from: type=gha

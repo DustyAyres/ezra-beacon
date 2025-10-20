@@ -126,7 +126,7 @@ resource "azurerm_container_app" "backend" {
 
       env {
         name  = "AzureAd__TenantId"
-        value = var.azure_ad_tenant_id
+        value = "common"
       }
 
       env {
@@ -137,11 +137,6 @@ resource "azurerm_container_app" "backend" {
       env {
         name  = "AzureAd__Scopes"
         value = "api://${var.azure_ad_client_id}/access_as_user"
-      }
-
-      env {
-        name  = "ASPNETCORE_URLS"
-        value = "http://+:5000"
       }
 
       env {
@@ -231,7 +226,7 @@ resource "azurerm_container_app" "frontend" {
 
       env {
         name  = "REACT_APP_AZURE_TENANT_ID"
-        value = var.azure_ad_tenant_id
+        value = "common"
       }
 
       env {

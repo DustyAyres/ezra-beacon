@@ -94,15 +94,21 @@ Configure Azure AD for user authentication:
 
 **Steps:**
 1. Navigate to Azure Portal → Azure Active Directory → App registrations
+
 ![App Registration MSAL](references/app-registration-msal.png)
+
 2. Create new registration with name like "Ezra Beacon"
 3. Configure redirect URIs for your environments:
    - Local: `http://localhost:3000`
    - Production: `https://your-frontend-url.azurecontainerapps.io`
+
 ![App Registration MSAL 2](references/app-registration-msal-2.png)
+
 4. Expose an API scope: `api://<client-id>/access_as_user`
+
 ![App Registration MSAL 3](references/app-registration-msal-3.png)
 ![App Registration MSAL 4](references/app-registration-msal-4.png)
+
 5. Configure authentication settings for SPA
 
 ### 2. Service Principal for Terraform/GitHub Actions
@@ -112,13 +118,17 @@ Set up OIDC authentication for GitHub Actions:
 
 **Steps:**
 1. Create a new App Registration for Terraform/GitHub Actions
+
 ![Terraform Service Principal](references/app-registration-terraform-sp.png)
+
 2. Add Federated Credentials:
    - Organization: `YourGitHubOrg`
    - Repository: `ezra-beacon`
    - Entity type: `Environment`
    - Environment: `dev` (repeat for each environment)
+
 ![Terraform Service Principal 2](references/app-registration-terraform-sp-2.png)
+
 3. Grant RBAC permissions:
    - **Option 1 (Recommended)**: Contributor role at Resource Group level
    - **Option 2**: Contributor role at Subscription level
@@ -128,14 +138,14 @@ Set up OIDC authentication for GitHub Actions:
 
 Before deploying to Azure:
 
-![Azure Hosting](references/azure-hosting.png)
 
 **Required Steps:**
 1. **Enable Resource Provider**:
    ```bash
    az provider register --namespace Microsoft.App
    ```
-![Azure Hosting](references/azure-hosting-2.png)
+
+![Azure Hosting](references/azure-hosting.png)
 
 
 2. **Create Hub Resource Group** (following hub-spoke pattern):
@@ -162,6 +172,8 @@ Before deploying to Azure:
    az storage container create --name tfstate \
      --account-name saezrabeacontfstatedev
    ```
+   
+![Azure Hosting](references/azure-hosting-2.png)
 
 5. **Configure GitHub Secrets** (see table above)
 

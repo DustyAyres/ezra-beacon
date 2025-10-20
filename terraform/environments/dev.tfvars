@@ -18,3 +18,4 @@ scale_rule_memory_percentage   = 80   # Scale at 80% memory
 
 # Development specific settings
 bypass_auth = "false"  # Enable auth bypass for development
+enable_multitenancy = true  # Enable multi-tenant authentication

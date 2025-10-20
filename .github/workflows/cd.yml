@@ -94,9 +94,9 @@ jobs:
         build-args: |
           REACT_APP_API_URL=${{ vars.REACT_APP_API_URL || '/api' }}
           REACT_APP_AZURE_CLIENT_ID=${{ secrets.REACT_APP_AZURE_CLIENT_ID }}
-          REACT_APP_AZURE_TENANT_ID=${{ 'common' }}
+          REACT_APP_AZURE_TENANT_ID=${{ vars.ENABLE_MULTITENANCY == 'true' && 'common' || secrets.AZURE_TENANT_ID }}
           REACT_APP_AZURE_REDIRECT_URI=${{ vars.REACT_APP_AZURE_REDIRECT_URI }}
-          REACT_APP_BYPASS_AUTH=${{ 'false' }}
+          REACT_APP_BYPASS_AUTH=${{ vars.REACT_APP_BYPASS_AUTH || 'false' }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
   
@@ -156,6 +156,7 @@ jobs:
           -var="acr_username=${{ secrets.ACR_USERNAME }}" \
           -var="acr_password=${{ secrets.ACR_PASSWORD }}" \
           -var="docker_image_tag=${{ needs.build-and-push.outputs.image-tag }}" \
+          -var="enable_multitenancy=${{ vars.ENABLE_MULTITENANCY || 'false' }}" \
           -out=tfplan
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

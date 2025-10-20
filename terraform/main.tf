@@ -62,7 +62,7 @@ resource "azurerm_subnet" "container_apps" {
   name                 = "snet-containerapp-${var.project_name}-${var.environment}-${var.region_code}"
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.2.0/23"]  # Larger subnet for Container Apps
+  address_prefixes     = ["10.0.2.0/23"] # Larger subnet for Container Apps
 }
 
 # Note: Using SQLite with Azure Files storage instead of Azure SQL Database
@@ -126,7 +126,7 @@ resource "azurerm_container_app" "backend" {
 
       env {
         name  = "AzureAd__TenantId"
-        value = "common"
+        value = var.enable_multitenancy ? "common" : var.azure_ad_tenant_id
       }
 
       env {
@@ -226,7 +226,7 @@ resource "azurerm_container_app" "frontend" {
 
       env {
         name  = "REACT_APP_AZURE_TENANT_ID"
-        value = "common"
+        value = var.enable_multitenancy ? "common" : var.azure_ad_tenant_id
       }
 
       env {

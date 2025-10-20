@@ -72,6 +72,12 @@ variable "bypass_auth" {
   default     = "false"
 }
 
+variable "enable_multitenancy" {
+  description = "Enable multi-tenant authentication (uses 'common' endpoint)"
+  type        = bool
+  default     = false
+}
+
 # Container Apps specific variables
 variable "container_cpu_backend" {
   description = "CPU allocation for backend container"

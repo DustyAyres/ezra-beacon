@@ -32,7 +32,7 @@ Configure in: Settings > Secrets and variables > Actions > Variables
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `REACT_APP_API_URL` | Backend API URL | `/api` (for relative URL) |
+| `REACT_APP_API_URL` | Backend API URL | `https://ca-backend-ezrabeacon-dev-ue2.whitemushroom-439b160a.eastus2.azurecontainerapps.io/api` |
 | `REACT_APP_AZURE_REDIRECT_URI` | Frontend URL for Azure AD | `https://ca-frontend-ezrabeacon-dev-ue2.azurecontainerapps.io` |
 | `REACT_APP_BYPASS_AUTH` | Enable dev auth bypass | `false` for production, `true` for dev |
 | `REACT_APP_AZURE_CLIENT_ID` | Azure AD App Client ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
@@ -145,13 +145,12 @@ Before deploying to Azure:
    az provider register --namespace Microsoft.App
    ```
 
-![Azure Hosting](references/azure-hosting.png)
-
-
 2. **Create Hub Resource Group** (following hub-spoke pattern):
    ```bash
    az group create --name rg-ezrabeacon-hub-dev --location eastus2
    ```
+
+![Azure Hosting](references/azure-hosting.png)
 
 3. **Create Azure Container Registry** (or include in Terraform):
    ```bash
@@ -172,7 +171,7 @@ Before deploying to Azure:
    az storage container create --name tfstate \
      --account-name saezrabeacontfstatedev
    ```
-   
+
 ![Azure Hosting](references/azure-hosting-2.png)
 
 5. **Configure GitHub Secrets** (see table above)

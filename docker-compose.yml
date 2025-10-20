@@ -31,6 +31,7 @@ services:
       - AzureAd__Scopes=api://${AZURE_CLIENT_ID}/access_as_user
       - ASPNETCORE_URLS=http://+:5000
       - Development__BypassAuthentication=${BYPASS_AUTH:-true}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
     volumes:
       - ./data:/app/data
     networks:

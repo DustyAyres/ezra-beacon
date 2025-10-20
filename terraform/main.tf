@@ -148,6 +148,11 @@ resource "azurerm_container_app" "backend" {
         name  = "Development__BypassAuthentication"
         value = var.bypass_auth
       }
+
+      env {
+        name  = "FRONTEND_URL"
+        value = "https://${azurerm_container_app.frontend.latest_revision_fqdn}"
+      }
     }
 
     min_replicas = var.min_replicas

@@ -33,6 +33,7 @@ Configure in: Settings > Secrets and variables > Actions > Secrets
 | `TF_STATE_STORAGE_ACCOUNT` | Terraform state storage account | `saezrabeacontfstatedev` |
 | `TF_STATE_CONTAINER` | Terraform state container name | `tfstate` |
 | `TF_STATE_RESOURCE_GROUP` | Terraform state resource group | `rg-ezrabeacon-tfstate-dev` |
+| `REACT_APP_AZURE_CLIENT_ID` | Azure AD App Client ID (if using secrets) | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
 
 ## Technology Stack
 
@@ -59,10 +60,104 @@ Configure in: Settings > Secrets and variables > Actions > Secrets
 - Azure CLI (for deployment)
 - Terraform (for infrastructure)
 
-### Azure Requirements ()
+### Azure Requirements
 - Azure Subscription
 - Azure AD App Registration
 - Service Principal for GitHub Actions
+
+## Azure Setup Guide
+
+### 1. Azure AD App Registration (MSAL Authentication)
+
+Configure Azure AD for user authentication:
+
+![App Registration MSAL](references/app-registration-msal.png)
+![App Registration MSAL 2](references/app-registration-msal-2.png)
+![App Registration MSAL 3](references/app-registration-msal-3.png)
+![App Registration MSAL 4](references/app-registration-msal-4.png)
+
+**Steps:**
+1. Navigate to Azure Portal → Azure Active Directory → App registrations
+2. Create new registration with name like "Ezra Beacon"
+3. Configure redirect URIs for your environments:
+   - Local: `http://localhost:3000`
+   - Production: `https://your-frontend-url.azurecontainerapps.io`
+4. Expose an API scope: `api://<client-id>/access_as_user`
+5. Configure authentication settings for SPA
+
+### 2. Service Principal for Terraform/GitHub Actions
+
+Set up OIDC authentication for GitHub Actions:
+
+![Terraform Service Principal](references/app-registration-terraform-sp.png)
+![Terraform Service Principal 2](references/app-registration-terraform-sp-2.png)
+
+**Steps:**
+1. Create a new App Registration for Terraform/GitHub Actions
+2. Add Federated Credentials:
+   - Organization: `YourGitHubOrg`
+   - Repository: `ezra-beacon`
+   - Entity type: `Environment`
+   - Environment: `dev` (repeat for each environment)
+3. Grant RBAC permissions:
+   - **Option 1 (Recommended)**: Contributor role at Resource Group level
+   - **Option 2**: Contributor role at Subscription level
+4. Note the Client ID, Tenant ID for GitHub Secrets
+
+### 3. Azure Hosting Prerequisites
+
+Before deploying to Azure:
+
+![Azure Hosting](references/azure-hosting.png)
+
+**Required Steps:**
+1. **Enable Resource Provider**:
+   ```bash
+   az provider register --namespace Microsoft.App
+   ```
+
+2. **Create Hub Resource Group** (following hub-spoke pattern):
+   ```bash
+   az group create --name rg-ezrabeacon-hub-dev --location eastus2
+   ```
+
+3. **Create Azure Container Registry** (or include in Terraform):
+   ```bash
+   az acr create --name acrezrabeacondev --resource-group rg-ezrabeacon-hub-dev --sku Basic
+   ```
+
+4. **Create Terraform State Storage**:
+   ```bash
+   # Create resource group for Terraform state
+   az group create --name rg-ezrabeacon-tfstate-dev --location eastus2
+   
+   # Create storage account
+   az storage account create --name saezrabeacontfstatedev \
+     --resource-group rg-ezrabeacon-tfstate-dev \
+     --sku Standard_LRS
+   
+   # Create blob container
+   az storage container create --name tfstate \
+     --account-name saezrabeacontfstatedev
+   ```
+
+5. **Configure GitHub Secrets** (see table above)
+
+6. **Run CD Pipeline** to deploy infrastructure
+
+### 4. Deployed Architecture
+
+The deployed infrastructure follows hub-spoke architecture:
+
+![Azure Resources](references/azure-hosting-2.png)
+![Azure Architecture](references/azure-hosting-3.png)
+
+**Resources Created:**
+- **Container Apps**: Separate frontend and backend apps
+- **Container Apps Environment (CAE)**: Shared hosting environment
+- **Log Analytics Workspace (LAW)**: Billing isolation and monitoring
+- **Virtual Network**: Network isolation and future Azure SQL integration
+- **Resource Groups**: Hub (shared resources) and Spoke (environment-specific)
 
 ## Local Development
 

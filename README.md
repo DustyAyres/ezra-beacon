@@ -232,16 +232,16 @@ For backend development with full debugging capabilities:
 2. **Open the backend solution in Visual Studio**
    ```bash
    cd backend
-   start EzraBeacon.sln
    ```
+   - Open 'EzraBeacon.sln' In Visual Studio
 
 3. **Set startup project**
    - Right-click `EzraBeacon.Api` → Set as Startup Project
 
 4. **Run the project** (F5)
-   - Backend is configured to run in Docker, and I believe it will use an ephemeral 
-   - Swagger UI: https://localhost:<VS-CONFIGURED-PORT> (available at root URL)
-   - Frontend (from Docker) on http://localhost:3000
+   - Backend is configured to run in Docker, and I believe it will use an ephemeral Port
+   - Swagger UI: https://localhost:<VS-CONFIGURED-PORT>/Index.html (available at root URL)
+   - Frontend (from Docker Compose) on http://localhost:3000
 
 ![Azure Hosting](references/swagger-ui.png)
    

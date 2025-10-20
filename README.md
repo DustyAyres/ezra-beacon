@@ -34,9 +34,6 @@ Configure in: Settings > Secrets and variables > Actions > Variables
 |----------|-------------|---------|
 | `REACT_APP_API_URL` | Backend API URL | `https://ca-backend-ezrabeacon-dev-ue2.whitemushroom-439b160a.eastus2.azurecontainerapps.io/api` |
 | `REACT_APP_AZURE_REDIRECT_URI` | Frontend URL for Azure AD | `https://ca-frontend-ezrabeacon-dev-ue2.azurecontainerapps.io` |
-| `REACT_APP_BYPASS_AUTH` | Enable dev auth bypass | `false` for production, `true` for dev |
-| `REACT_APP_AZURE_CLIENT_ID` | Azure AD App Client ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
-| `REACT_APP_AZURE_TENANT_ID` | Azure AD Tenant ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
 
 ### Repository Secrets
 Configure in: Settings > Secrets and variables > Actions > Secrets

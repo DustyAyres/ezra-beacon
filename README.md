@@ -71,17 +71,16 @@ Configure in: Settings > Secrets and variables > Actions > Secrets
 
 Configure Azure AD for user authentication:
 
-![App Registration MSAL](references/app-registration-msal.png)
-![App Registration MSAL 2](references/app-registration-msal-2.png)
-![App Registration MSAL 3](references/app-registration-msal-3.png)
-![App Registration MSAL 4](references/app-registration-msal-4.png)
-
 **Steps:**
+![App Registration MSAL](references/app-registration-msal.png)
 1. Navigate to Azure Portal → Azure Active Directory → App registrations
 2. Create new registration with name like "Ezra Beacon"
+![App Registration MSAL 2](references/app-registration-msal-2.png)
 3. Configure redirect URIs for your environments:
    - Local: `http://localhost:3000`
    - Production: `https://your-frontend-url.azurecontainerapps.io`
+![App Registration MSAL 3](references/app-registration-msal-3.png)
+![App Registration MSAL 4](references/app-registration-msal-4.png)
 4. Expose an API scope: `api://<client-id>/access_as_user`
 5. Configure authentication settings for SPA
 
@@ -89,11 +88,11 @@ Configure Azure AD for user authentication:
 
 Set up OIDC authentication for GitHub Actions:
 
-![Terraform Service Principal](references/app-registration-terraform-sp.png)
-![Terraform Service Principal 2](references/app-registration-terraform-sp-2.png)
 
 **Steps:**
+![Terraform Service Principal](references/app-registration-terraform-sp.png)
 1. Create a new App Registration for Terraform/GitHub Actions
+![Terraform Service Principal 2](references/app-registration-terraform-sp-2.png)
 2. Add Federated Credentials:
    - Organization: `YourGitHubOrg`
    - Repository: `ezra-beacon`
@@ -115,6 +114,8 @@ Before deploying to Azure:
    ```bash
    az provider register --namespace Microsoft.App
    ```
+![Azure Hosting](references/azure-hosting-2.png)
+
 
 2. **Create Hub Resource Group** (following hub-spoke pattern):
    ```bash
@@ -149,7 +150,6 @@ Before deploying to Azure:
 
 The deployed infrastructure follows hub-spoke architecture:
 
-![Azure Resources](references/azure-hosting-2.png)
 ![Azure Architecture](references/azure-hosting-3.png)
 
 **Resources Created:**
@@ -318,7 +318,6 @@ ezra-beacon/
 │   │   └── Entities/         # Task, Category, User models
 │   ├── EzraBeacon.Infrastructure/  # Data access layer
 │   │   ├── Data/             # DbContext and configurations
-│   │   └── Migrations/       # EF Core migrations
 │   ├── EzraBeacon.Tests/      # Unit and integration tests
 │   └── backend.Dockerfile     # Backend container definition
 ├── frontend/                   # React PWA application
@@ -335,14 +334,13 @@ ezra-beacon/
 │   │   └── App.tsx          # Root component
 │   └── frontend.Dockerfile    # Frontend container definition
 ├── scripts/                    # Deployment and utility scripts
-│   ├── update-backend-cors.ps1   # PowerShell CORS update
-│   └── update-backend-cors.sh    # Bash CORS update
+│   └── deploy-to-acr.sh    # Bash Script to Push Docker Image(s) to ACR
 ├── terraform/                  # Infrastructure as Code
 │   ├── main.tf                # Azure resources definition
 │   ├── variables.tf           # Terraform variables
 │   ├── outputs.tf             # Output values
 │   └── environments/          # Environment-specific configs
-│       └── dev.tfvars        # Development environment
+│       └── dev.tfvars        # Development environment Variables
 ├── docker-compose.yml          # Local development orchestration
 ├── env.example                 # Example environment variables
 └── README.md                   # This file

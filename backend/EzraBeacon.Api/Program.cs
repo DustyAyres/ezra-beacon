@@ -32,22 +32,22 @@ builder.Services.AddCors(options =>
         policy =>
         {
             var allowedOrigins = new List<string> { "http://localhost:3000", "http://frontend" };
-            
+
             // Add configured allowed origins from appsettings
             var configuredOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
             if (configuredOrigins != null)
             {
                 allowedOrigins.AddRange(configuredOrigins);
             }
-            
+
             // Add frontend URL from environment variable
             var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
             if (!string.IsNullOrEmpty(frontendUrl))
             {
                 allowedOrigins.Add(frontendUrl);
             }
-           
-            
+
+
             policy.WithOrigins(allowedOrigins.Distinct().ToArray())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
